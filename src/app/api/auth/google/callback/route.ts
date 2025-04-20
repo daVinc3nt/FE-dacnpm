@@ -6,7 +6,7 @@ export async function GET(req: NextRequest) {
 
   if (token) {
     // Tạo response với cookie và redirect
-    const response = NextResponse.redirect(new URL("/home", req.url));
+    const response = NextResponse.redirect(new URL("/", req.url));
     
     // Set cookie chứa token
     response.cookies.set("gid", token, {

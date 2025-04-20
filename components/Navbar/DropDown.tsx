@@ -45,11 +45,11 @@ export default function DropDown() {
 			ref={ref}
 			onClick={() => setDropDown(!dropDown)}>
 			<div className="h-8 w-8 object-fill overflow-hidden rounded-xl">
-				{status =="authenticated" ? session && session.image_url?
+				{status =="authenticated" ? session && session.avaUrl?
 				<Image
 				height={100}
 				width={100}
-				src={session.image_url}
+				src={session.avaUrl}
 				alt={""}
 				/>: 
 				<Image
@@ -70,13 +70,13 @@ export default function DropDown() {
 					{status =="authenticated" && 
 					<div className="w-full h-fit flex flex-col justify-start items-start gap-2 text-sm">
 						<div className="text-gray-500 w-full text-xl text-center font-semibold">
-							{t("greeting")} <span className="text-red-500">{session && session.full_name || session.name}</span> 
+							{t("greeting")} <span className="text-red-500">{session && session.fullName}</span> 
 						</div>
 					</div>}
 
 					<hr className="solid bg-gray-200 border-gray-200 border rounded-full"></hr>
 
-					{session?.role != "ADMIN" && <div className="w-full h-fit flex flex-col justify-start items-start text-base">
+					{ <div className="w-full h-fit flex flex-col justify-start items-start text-base">
 						<Link
 							href="/profile"
 							className="w-full hover:bg-primary p-2 flex items-center justify-start">
@@ -89,7 +89,7 @@ export default function DropDown() {
 							<LogoutIcon height={6} width={6} color="black" />
 						</div>
 					</div>}
-					{session?.role == "ADMIN" && 
+					{/* {session?.role == "ADMIN" && 
 					<div className="w-full h-fit flex flex-col justify-start items-start text-base">
 						<p
 							className="w-full hover:bg-primary p-2 flex items-center justify-start">
@@ -103,7 +103,7 @@ export default function DropDown() {
 							className="w-full hover:bg-primary p-2 flex items-center justify-start">
 							{session.phone_number}
 						</p>
-					</div>}
+					</div>} */}
 				</div>
 			}
 		</button>

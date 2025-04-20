@@ -44,9 +44,9 @@ export default function Home({params: {locale}}: Props) {
 					bottom-[10vh] right-[10vh] grid place-items-center"
 					data-aos="fade-right"
 				>
-					<Image src="/photos/hcmut.jpg"
+					<Image src="/photos/farm.jpg"
 					className="w-72 h-72 brightness-75 rounded-full shadow-lg " 
-					alt="hcmut" width={300} height={300} />
+					alt="farm" width={300} height={300} />
 					<div
 						className="absolute w-52 h-52 rounded-full 
 						border-[5px]
