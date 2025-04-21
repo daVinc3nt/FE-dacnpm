@@ -573,7 +573,7 @@ export class DeviceOperation {
 
     async create(payload: any, token: string) {
         try {
-			const response: AxiosResponse = await axios.post(`${this.baseUrl}`, payload, {
+			const response: AxiosResponse = await axios.post(`${this.baseUrl}/add`, payload, {
 
 				withCredentials: true,
                 validateStatus: status => status >= 200 && status <= 500,

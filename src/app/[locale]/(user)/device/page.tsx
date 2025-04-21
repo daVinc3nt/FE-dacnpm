@@ -13,6 +13,7 @@ import { DeviceOperation } from "@/BE-library/main";
 import PrinterList from "./_view/printerList";
 import UploadFile from "./_view/uploadFile";
 import { useRouter } from "next/navigation";
+import QrScanner from "@/components/QrScan/QrScan";
 
 export default function Print() {
 	const {session, status} = useSession();
@@ -26,7 +27,7 @@ export default function Print() {
 	return (
 		<>
 		<Aos/>
-			<div className="h-screen flex justify-center">
+			<div className="h-screen w-screen flex justify-center">
 				<div className="relative w-screen px-20 flex items-center h-screen bg-green-700">
 					<Image src="/photos/Vector13.png" alt="Bg" width={9999} height={9999} 
 						className="absolute bottom-0 left-0"

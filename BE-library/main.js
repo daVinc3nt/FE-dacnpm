@@ -805,7 +805,7 @@ var DeviceOperation = /** @class */ (function () {
                 switch (_c.label) {
                     case 0:
                         _c.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, axios_1.default.post("".concat(this.baseUrl), payload, {
+                        return [4 /*yield*/, axios_1.default.post("".concat(this.baseUrl, "/add"), payload, {
                                 withCredentials: true,
                                 validateStatus: function (status) { return status >= 200 && status <= 500; },
                                 headers: {

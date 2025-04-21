@@ -7,7 +7,7 @@ import AreaChartCard from "@/components/Chart/Line";
 import CustomLoadingElement from "../../loading";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import NotificationEditorModal from "../_component/modal";
+import NotificationEditorModal from "../_component/editModal";
 interface Notification {
   frequencyMinutes: number;
   active: boolean;
@@ -76,28 +76,28 @@ function DevicePage({
   };
 
   const handleSaveNotification = async (updatedNotification: Notification) => {
-    if (session && device) {
-      const notificationWithIds = {
-        ...updatedNotification,
-        userId: session.id,
-        deviceId: device.id,
-      };
+    // if (session && device) {
+    //   const notificationWithIds = {
+    //     ...updatedNotification,
+    //     userId: session.id,
+    //     deviceId: device.id,
+    //   };
 
-      if (device && session) {
-        toast.promise(
-          notificationOperation.createOrUpdate(notificationWithIds, session.sid),
-          {
-            loading: 'Đang cập nhật...',
-            success: async (data) => {
-              setEditingNotification(data.data);
-              setOpen(false); // Exit edit mode after successful update
-              return 'Cập nhật thành công!';
-            },
-            error: 'Lỗi khi cập nhật',
-          }
-        );
-      }
-    }
+    //   if (device && session) {
+    //     toast.promise(
+    //       notificationOperation.createOrUpdate(notificationWithIds, session.sid),
+    //       {
+    //         loading: 'Đang cập nhật...',
+    //         success: async (data) => {
+    //           setEditingNotification(data.data);
+    //           setOpen(false); // Exit edit mode after successful update
+    //           return 'Cập nhật thành công!';
+    //         },
+    //         error: 'Lỗi khi cập nhật',
+    //       }
+    //     );
+    //   }
+    // }
   };
 
   useEffect(() => {

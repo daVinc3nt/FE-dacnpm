@@ -8,6 +8,9 @@ import { PaymentOperation, DeviceOperation } from "@/BE-library/main";
 import { FaArrowCircleRight } from "react-icons/fa";
 import { IoWarning } from "react-icons/io5";
 import { useRouter } from "next/navigation";
+import AddDeviceModal from "../_component/addModal"; // Import AddDeviceModal
+import { toast } from "sonner";
+
 function getStatusClass(status) {
 	switch (status) {
         case 'active':
@@ -28,9 +31,31 @@ interface Props {
 export default function PrinterList({setView}:Props) {
 	const {session, status} =useSession()
 	const [ListPayment, setListPayment] = useState(null)
+	const [showAddModal, setShowAddModal] = useState(false); // State to control AddDeviceModal visibility
 	const t =useTranslations("profile")
 	const action = new DeviceOperation()
     const router = useRouter()
+
+	const handleAddDevice = async (newDevice) => {
+		if (session) {
+			toast.promise(
+				action.create(newDevice, session.sid),
+				{
+					loading: "Đang thêm thiết bị...",
+					success: async (response) => {
+                        console.log(response)
+						setShowAddModal(false); // Close the modal after saving
+						setTimeout(() => {
+							window.location.reload(); // Reload the page after a delay
+						}, 500); // 500ms delay
+						return "Thêm thiết bị thành công!";
+					},
+					error: "Lỗi khi thêm thiết bị",
+				}
+			);
+		}
+	};
+
 	useEffect(() => {
         const fetchData = async () => {
             // const res = await action.searchStudentByID(session.id, session.sid)
@@ -85,6 +110,22 @@ export default function PrinterList({setView}:Props) {
                 :<CustomLoadingElement/>
                 }
             </div>
+
+			{/* Add Device Modal */}
+			{showAddModal && (
+				<AddDeviceModal
+					onClose={() => setShowAddModal(false)}
+					onSave={handleAddDevice}
+				/>
+			)}
+
+			{/* Floating Add Button */}
+			<button
+				onClick={() => setShowAddModal(true)}
+				className="fixed bottom-10 right-10 bg-blue-500 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg hover:bg-blue-600"
+			>
+				+
+			</button>
 		</>
 	);
 }
