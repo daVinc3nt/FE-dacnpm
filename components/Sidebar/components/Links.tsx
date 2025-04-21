@@ -39,7 +39,7 @@ export function SidebarLinks({ onClickRoute }: Props) {
     },
     {
       name: t("online_test"),
-      path: "/print",
+      path: "/MyFarm",
       icon: <IoLibrary className="h-6 w-6" />,
       type:"online_test",
     },

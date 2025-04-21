@@ -1,0 +1,257 @@
+"use client";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { DeviceOperation, FileOperation, NotificationOperation } from "@/BE-library/main";
+import { useSession } from "@/providers/SessionProvider";
+import AreaChartCard from "@/components/Chart/Line";
+import CustomLoadingElement from "../../loading";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import NotificationEditorModal from "../_component/editModal";
+interface Notification {
+  frequencyMinutes: number;
+  active: boolean;
+  title: string;
+  description: string | null;
+}
+
+interface DataType {
+  created_at: Date;
+  created_epoch: number;
+  expiration: string;
+  feed_id: number;
+  feed_key: string;
+  id: string;
+  value: number;
+}
+
+interface DeviceType {
+  action: string;
+  createDate: string;
+  deviceName: string;
+  id: string;
+  qrCode: string;
+  status: string;
+  type: string;
+  updateDate: string;
+}
+
+function getTopValues(data: DataType[], count: number = 20): number[] {
+  return data.slice(0, count).map(item => item.value);
+}
+
+const notificationOperation = new NotificationOperation();
+
+function DevicePage({
+  params
+}) {
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const [edit, setEdit] = useState(false);
+  const [device, setDevice] = useState<DeviceType | null>(null);
+  const [data, setData] = useState<DataType[] | null>(null);
+  const { session, status } = useSession();
+  const action = new DeviceOperation();
+  const [editingNotification, setEditingNotification] = useState<Notification>(null);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+
+  const closePopup = () => {
+    setOpen(false)
+  };
+
+  const handleUpdateDevice = async () => {
+    if (device && session) {
+      toast.promise(
+        action.updateDevice(device.id, device, session.sid),
+        {
+          loading: 'Đang cập nhật thiết bị...',
+          success: () => {
+            setEdit(false); // Exit edit mode after successful update
+            return 'Cập nhật thiết bị thành công!';
+          },
+          error: 'Lỗi khi cập nhật thiết bị',
+        }
+      );
+    }
+  };
+
+  const handleSaveNotification = async (updatedNotification: Notification) => {
+    // if (session && device) {
+    //   const notificationWithIds = {
+    //     ...updatedNotification,
+    //     userId: session.id,
+    //     deviceId: device.id,
+    //   };
+
+    //   if (device && session) {
+    //     toast.promise(
+    //       notificationOperation.createOrUpdate(notificationWithIds, session.sid),
+    //       {
+    //         loading: 'Đang cập nhật...',
+    //         success: async (data) => {
+    //           setEditingNotification(data.data);
+    //           setOpen(false); // Exit edit mode after successful update
+    //           return 'Cập nhật thành công!';
+    //         },
+    //         error: 'Lỗi khi cập nhật',
+    //       }
+    //     );
+    //   }
+    // }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (status === "authenticated" && session && params.id[0]) {
+        try {
+          const result = await action.getData(params.id[0], session.sid);
+          const deviceInfo = await action.searchAll(session.sid, { id: params.id[0] });
+          const notificationData = await action.searchAll(session.sid, { id: params.id[0] });
+          const notificationDetail = await notificationOperation.findOne(session.id,params.id[0], session.sid);
+
+          console.log(deviceInfo.data);
+          setDevice(deviceInfo.data[0]);
+          setData(result);
+          setNotifications(notificationData.data);
+          setEditingNotification(notificationDetail.data);
+          console.log(notificationDetail)
+        } catch (error) {
+          console.error("Error fetching device data:", error);
+        }
+      }
+    };
+    fetchData();
+  }, [status, session, params.id[0]]);
+
+  return (
+    <>
+      <div className="w-screen h-fit md:h-screen overflow-y-scroll md:overflow-hidden">
+        {device ? 
+          <div className="flex gap-10 pt-20 items-center w-full h-full flex-col md:flex-row md:px-10">
+            {/* Chart Section */}
+            <div className="h-full w-full md:w-1/2 flex flex-col items-center justify-center gap-10">
+              <div className="h-1/2 w-full flex flex-col bg-white rounded-lg p-5">
+                <div className="text-xl font-bold mb-4">Thông tin thiết bị</div>
+                {device && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-lg">
+                    {Object.entries({
+                      "Tên": "deviceName",
+                      "Loại": "type",
+                      "QR code": "qrCode",
+                      "Trạng thái": "status",
+                      "Ngày tạo": "createDate",
+                      "Ngày cập nhật": "updateDate",
+                      "Loại hành động": "action",
+                    }).map(([label, key]) => (
+                      <div key={key} className="flex items-center gap-2">
+                        <strong>{label}:</strong>
+                        {
+                        key === "createDate" || key === "updateDate" || !edit ?
+                        (() => {
+                            const value = device[key];
+                            if (key === "createDate" || key === "updateDate") {
+                              const dateValue = typeof value === "string" ? new Date(value) : value;
+                              return (
+                                <span>
+                                  {dateValue.toLocaleTimeString("vi-VN")} {dateValue.toLocaleDateString("vi-VN")}
+                                </span>
+                              );
+                            }
+                            return <span>{value}</span>;
+                          })()
+                          :
+                        <input
+                          type="text"
+                          value={device[key]}
+                          onChange={(e) =>
+                            setDevice((prev) => ({
+                              ...prev,
+                              [key]: e.target.value,
+                            }))
+                          }
+                          className="border rounded px-2 py-1 flex-1"
+                        />}
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <div className="flex gap-4 mt-4">
+                  {!edit ? 
+                    <>
+                      <button
+                        onClick={() => setEdit(true)}
+                        className="rounded-lg text-green-700 ring-2 ring-green-700 px-4 py-2 active:bg-green-700 active:text-white"
+                      >
+                        Chỉnh sửa
+                      </button>
+                    </>
+                  :
+                    <>
+                      <button
+                        onClick={handleUpdateDevice}
+                        className="rounded-lg text-white bg-green-700 px-4 py-2 active:bg-green-600 active:ring-transparent active:text-white"
+                      >
+                        Cập nhật
+                      </button>                         
+                    </>
+                  }
+                  <button
+                    onClick={() => {
+                      setOpen(true)
+                    }}
+                    className="rounded-lg text-white bg-blue-700 px-4 py-2 active:bg-blue-600 active:ring-transparent active:text-white"
+                  >
+                    Cài đặt thông báo
+                  </button>
+                </div>
+              </div>
+              {data && <div className="h-1/2 w-full flex flex-col">
+                <AreaChartCard
+                  data={getTopValues(data).reverse()}
+                  categories={data.map(item => 
+                    `${new Date(item.created_at).toLocaleDateString("vi-VN")} ${new Date(item.created_at).toLocaleTimeString("vi-VN")}`
+                  ).reverse()}
+                  label="Lịch sử ghi nhận"
+                  color="#10B981"
+                />
+              </div>}
+            </div>
+
+            {/* Table Section */}
+            <div className="h-full w-full md:w-1/2 flex flex-col bg-white rounded-lg overflow-hidden">
+              <div className="h-16 grid grid-cols-2 text-center text-white items-center p-4 text-lg font-bold bg-green-700">
+                <div>Ghi nhận giá trị</div>
+                <div>Vào lúc</div>
+              </div>
+              <div className="flex-1 md:overflow-y-scroll">
+                {data?.sort((a, b) => {
+                  return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+                }).map(({ id, feed_key, feed_id, value, expiration, created_at }) => (
+                  <div
+                    className="grid grid-cols-2 text-center items-center p-4 text-lg font-medium w-full"
+                    key={id}
+                  >
+                    <div>{value}</div>
+                    <div className="flex flex-col items-center space-y-1">
+                      <span> {new Date(created_at).toLocaleTimeString("vi-VN")} {new Date(created_at).toLocaleDateString("vi-VN")}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          : <CustomLoadingElement />
+        }
+        {open && (
+          <NotificationEditorModal
+            notification={editingNotification}
+            onClose={closePopup}
+            onSave={handleSaveNotification}
+          />
+        )}
+      </div>
+    </>
+  );
+}
+
+export default DevicePage;

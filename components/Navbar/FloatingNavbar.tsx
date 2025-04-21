@@ -32,8 +32,8 @@ export const FloatingNav = ({
   const { scrollYProgress } = useScroll();
   const navItems = [
     { name: t("home"), link: "/" },
-    { name: t("online_test"), link: "/print" },
-    { name: t("notes"), link: "/buypage" },
+    { name: t("online_test"), link: "/device" },
+    { name: t("notes"), link: "/schedule" },
     { name: t("news"), link: "/" },
     
   ];

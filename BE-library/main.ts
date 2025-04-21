@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import { BulkCreateFullFlashCard, CheckExistAccount, ConfirmPayload, CreateFTag, CreateFullFlashCard, CreateFullPracticeFromTest, CreateFullQuiz, CreateFullTest, CreateTag, CreateTestFromQuizIds, EmailResetPassword, FetchingType, GetRecord, InitRecord, LangVersion, LoginPayload, PrintJobPayload, RecordFetchingType, RefreshToken, RemarkWriting, ResendOTPPayload, SearchPayload, SignUpPayload, Skill, UpdateAccountPayload, UpdateAvatarPayload, UpdateFTag, UpdateFullFlashCard, UpdateFullQuiz, UpdateFullRecord, UpdateFullTest, UpdateQuiz, UpdateRecord, UpdateRecordConfig, UpdateTag, VerifyOtpForResetPasswordPayload, VerifyOtpPayload } from "./interfaces";
+import { BulkCreateFullFlashCard, CheckExistAccount, ConfirmPayload, CreateFTag, CreateFullFlashCard, CreateFullPracticeFromTest, CreateFullQuiz, CreateFullTest, CreateTag, CreateTestFromQuizIds, Device, EmailResetPassword, FetchingType, GetRecord, InitRecord, LangVersion, LoginPayload, PrintJobPayload, RecordFetchingType, RefreshToken, RemarkWriting, ResendOTPPayload, SearchPayload, SignUpPayload, Skill, UpdateAccountPayload, UpdateAvatarPayload, UpdateFTag, UpdateFullFlashCard, UpdateFullQuiz, UpdateFullRecord, UpdateFullTest, UpdateQuiz, UpdateRecord, UpdateRecordConfig, UpdateTag, VerifyOtpForResetPasswordPayload, VerifyOtpPayload } from "./interfaces";
 import { UUID } from "crypto";
 
 export class AuthOperation {
@@ -181,7 +181,7 @@ export class AccountOperation {
     private langQuery: string;
 
     constructor() {
-        this.baseUrl = 'https://co3001-software-engineering-internal-kw83.onrender.com/api/v1/users';
+        this.baseUrl = 'http://localhost:8000/api/v1/user';
         this.langQuery = `lang=${LangVersion.vi}`;
     }
 
@@ -340,7 +340,7 @@ export class AccountOperation {
 
     async getAuthenticatedInfo(token: string) {
         try {
-			const response: AxiosResponse = await axios.get(`${this.baseUrl}/detail`, {
+			const response: AxiosResponse = await axios.get(`${this.baseUrl}/info`, {
 				withCredentials: true,
                 validateStatus: status => status >= 200 && status <= 500,
                 headers: {
@@ -349,7 +349,7 @@ export class AccountOperation {
 			});
 			
 			return {
-                success: response.data.success,
+                success: response.data,
                 message: response.data.message,
                 data: response.data.data,
                 status: response.status
@@ -555,12 +555,15 @@ export class PaymentOperation {
 		}
     }
 }
-export class PrinterOperation {
+
+
+
+export class DeviceOperation {
     private baseUrl: string;
     private langQuery: string;
 
     constructor() {
-        this.baseUrl = 'https://co3001-software-engineering-internal-kw83.onrender.com/api/v1/printers';
+        this.baseUrl = 'http://localhost:8000/api/v1/device';
         this.langQuery = `lang=${LangVersion.vi}`;
     }
 
@@ -570,7 +573,7 @@ export class PrinterOperation {
 
     async create(payload: any, token: string) {
         try {
-			const response: AxiosResponse = await axios.post(`${this.baseUrl}`, payload, {
+			const response: AxiosResponse = await axios.post(`${this.baseUrl}/add`, payload, {
 
 				withCredentials: true,
                 validateStatus: status => status >= 200 && status <= 500,
@@ -593,32 +596,39 @@ export class PrinterOperation {
 		}
     }
 
-    //get tags
-    async searchAll(token: string) {
+    async searchAll(token: string, payload: { 
+        id?: string; 
+        action?: string; 
+        status?: string; 
+        startDate?: string; 
+        endDate?: string; 
+    }) {
+        console.log(payload)
         try {
-			const response: AxiosResponse = await axios.get(`${this.baseUrl}`,{
+            const response: AxiosResponse = await axios.get(`${this.baseUrl}`, {
+                params:  payload,
 				withCredentials: true,
                 validateStatus: status => status >= 200 && status <= 500,
                 headers: {
                     Authorization: `Bearer ${token}`
                 },
 			});
-			
-			return {
+
+            return {
                 success: response.data.success,
                 message: response.data.message,
                 data: response.data.data,
                 status: response.status
             };
-		} 
-		catch (error: any) {
-			console.log("Error searching accounts: ", error?.response?.data);
+
+        } catch (error: any) {
+            console.log("Error searching devices: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
-            return { success: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
+            throw new Error(error?.response?.data?.message || "An error occurred");
+        }
     }
 
-    async update(id: UUID, payload: UpdatePrinterPayload, token: string) {
+    async update(id: UUID, payload: UpdateDevicePayload, token: string) {
         try {
 			const response: AxiosResponse = await axios.put(`${this.baseUrl}/${id}`, payload, {
 				withCredentials: true,
@@ -641,6 +651,7 @@ export class PrinterOperation {
             return { success: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
 		}
     }
+    
     async delete(id: string, token: string) {
         try {
 			const response: AxiosResponse = await axios.delete(`${this.baseUrl}/${id}`, {
@@ -663,6 +674,66 @@ export class PrinterOperation {
             console.error("Request that caused the error: ", error?.request);
             return { success: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
 		}
+    }
+
+    async getData(deviceId: string, token: string){
+        try {
+            const response: AxiosResponse = await axios.get(`${this.baseUrl}/getdata`, {
+                params: { deviceId },
+                withCredentials: true,
+                validateStatus: status => status >= 200 && status <= 500,
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+            });
+
+            return response.data.data;
+        } catch (error: any) {
+            console.log("Error fetching device data: ", error?.response?.data);
+            console.error("Request that caused the error: ", error?.request);
+            throw new Error(error?.response?.data?.message || "An error occurred");
+        }
+    }
+
+    async updateDevice(id: string, payload: Device, token: string): Promise<string> {
+        try {
+            const response: AxiosResponse = await axios.put(`${this.baseUrl}/update`, payload, {
+                params: { id },
+                withCredentials: true,
+                validateStatus: status => status >= 200 && status <= 500,
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+            });
+
+            return response.data;
+        } catch (error: any) {
+            console.log("Error updating device: ", error?.response?.data);
+            console.error("Request that caused the error: ", error?.request);
+            throw new Error(error?.response?.data?.message || "An error occurred");
+        }
+    }
+
+    async getFirstDataPointsForUser(userId: string, token: string): Promise<any[]> {
+        if (!userId) {
+            throw new Error("User ID is required");
+        }
+        try {
+            const response: AxiosResponse = await axios.get(`${this.baseUrl}/first-data-points`, {
+                params: { userId },
+                withCredentials: true,
+                validateStatus: status => status >= 200 && status <= 500,
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+            });
+
+            return response.data.data;
+        } catch (error: any) {
+            console.log("Error fetching first data points: ", error?.response?.data);
+            console.error("Request that caused the error: ", error?.request);
+            throw new Error(error?.response?.data?.message || "An error occurred");
+        }
     }
 }
 export class FileOperation {
@@ -935,110 +1006,109 @@ export class UserOperation {
 		}
     }
 }
-export class LocationOperation {
+export class NotificationOperation {
     private baseUrl: string;
     private langQuery: string;
 
     constructor() {
-        this.baseUrl = 'https://co3001-software-engineering-internal-kw83.onrender.com/api/v1/locations';
+        this.baseUrl = 'http://localhost:8000/api/v1/notifications/config';
         this.langQuery = `lang=${LangVersion.vi}`;
     }
 
     setLanguage(lang: LangVersion) {
         this.langQuery = `lang=${lang}`;
     }
-    async create(payload: any, token: string) {
-        try {
-			const response: AxiosResponse = await axios.post(`${this.baseUrl}`, payload, {
 
-				withCredentials: true,
-                validateStatus: status => status >= 200 && status <= 500,
-                headers: {
-                    Authorization: `Bearer ${token}`
-                },
-			});
-			
-			return {
-                success: response.data.success,
-                message: response.data.message,
-                data: response.data.data,
-                status: response.status
-            };
-		} 
-		catch (error: any) {
-			console.log("Error searching accounts: ", error?.response?.data);
-            console.error("Request that caused the error: ", error?.request);
-            return { success: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
-    }
-    async searchAll(token: string) {
+    async createOrUpdate(payload: any, token: string) {
         try {
-			const response: AxiosResponse = await axios.get(`${this.baseUrl}`,{
-				withCredentials: true,
+            const response: AxiosResponse = await axios.post(`${this.baseUrl}`, payload, {
+                withCredentials: true,
                 validateStatus: status => status >= 200 && status <= 500,
                 headers: {
                     Authorization: `Bearer ${token}`
                 },
-			});
-			
-			return {
+            });
+
+            return {
                 success: response.data.success,
                 message: response.data.message,
                 data: response.data.data,
                 status: response.status
             };
-		} 
-		catch (error: any) {
-			console.log("Error searching accounts: ", error?.response?.data);
+        } catch (error: any) {
+            console.log("Error creating/updating notification config: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { success: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
+        }
     }
-    async searchFilesById(id: string, token: string) {
+
+    async findOne(userId: string, deviceId: string, token: string) {
         try {
-			const response: AxiosResponse = await axios.get(`${this.baseUrl}/${id}`,{
-				withCredentials: true,
+            const response: AxiosResponse = await axios.get(`${this.baseUrl}/${userId}/${deviceId}`, {
+                withCredentials: true,
                 validateStatus: status => status >= 200 && status <= 500,
                 headers: {
                     Authorization: `Bearer ${token}`
                 },
-			});
-			
-			return {
+            });
+
+            return {
                 success: response.data.success,
                 message: response.data.message,
                 data: response.data.data,
                 status: response.status
             };
-		} 
-		catch (error: any) {
-			console.log("Error searching accounts: ", error?.response?.data);
+        } catch (error: any) {
+            console.log("Error fetching notification config: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { success: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
+        }
     }
-    async delete(id: UUID, token: string) {
+
+    async update(userId: string, deviceId: string, payload: any, token: string) {
         try {
-			const response: AxiosResponse = await axios.delete(`${this.baseUrl}/${id}`, {
-				withCredentials: true,
+            const response: AxiosResponse = await axios.put(`${this.baseUrl}/${userId}/${deviceId}`, payload, {
+                withCredentials: true,
                 validateStatus: status => status >= 200 && status <= 500,
                 headers: {
                     Authorization: `Bearer ${token}`
                 },
-			});
-			
-			return {
+            });
+
+            return {
                 success: response.data.success,
                 message: response.data.message,
                 data: response.data.data,
                 status: response.status
             };
-		} 
-		catch (error: any) {
-			console.log("Error updating account: ", error?.response?.data);
+        } catch (error: any) {
+            console.log("Error updating notification config: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { success: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
+        }
+    }
+
+    async remove(userId: string, deviceId: string, token: string) {
+        try {
+            const response: AxiosResponse = await axios.delete(`${this.baseUrl}/${userId}/${deviceId}`, {
+                withCredentials: true,
+                validateStatus: status => status >= 200 && status <= 500,
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+            });
+
+            return {
+                success: response.data.success,
+                message: response.data.message,
+                data: response.data.data,
+                status: response.status
+            };
+        } catch (error: any) {
+            console.log("Error deleting notification config: ", error?.response?.data);
+            console.error("Request that caused the error: ", error?.request);
+            return { success: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
+        }
     }
 }
 export class FileFormatOperation {
@@ -1261,7 +1331,7 @@ export class PageAllocOperation {
 
 // flash card
 
-export interface UpdatePrinterPayload {
+export interface UpdateDevicePayload {
     name?: number;
     brand?: string;
     type?: string;

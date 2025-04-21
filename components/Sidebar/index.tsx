@@ -34,13 +34,13 @@ const Sidebar: FC<Props> = () => {
         
 						
         <div className="relative w-full h-full flex flex-col justify-center cursor-pointer">
-				{status =="authenticated" ? session && session.image_url?
+				{status =="authenticated" ? session && session.avaUrl?
         <div className="flex mr-auto ml-auto right-0 left-0 w-fit flex-col gap-2 ">
           <div className="w-14 h-14 hover:cursor-pointer 
           rounded-full overflow-hidden ">
           <Image
           alt=""
-          src={session.image_url}
+          src={session.avaUrl}
           width={30}
           height={30}
           className="w-full h-full object-cover"

@@ -5,17 +5,16 @@ import Cookies from 'js-cookie';
 import { usePathname, useRouter } from 'next/navigation';
 import { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
 interface userSession {
-    email:string
-    full_name :string
-    id: number
-    image_url: string;
-    join_date: Date;
-    last_login: Date;
-    sid: string;
-    student_balance: number;
-    name: string;
-    phone_number: string;
-    role: string;
+    id: string;
+    fullName: string;
+    email: string;
+    googleId: string;
+    avaUrl: string;
+    createdAt: string;
+    updateAt: string;
+    devices: any[]; // Adjust type if necessary
+    schedules: any[]; // Adjust type if necessary
+    sid: string
 }
 interface SessionContextType {
     status: 'loading' | 'authenticated' | 'unauthenticated';
@@ -43,12 +42,11 @@ export function SessionProvider({ children }) {
         const fetchData = async () => {
             setSession(sid)
             const infoRes = await infoAction.getAuthenticatedInfo(sid)
-            const AdminInfoRes = await adminInfoAction.getAuthenticatedInfo(sid)
             // console.log( infoRes )
-            if(infoRes.status != 200 && AdminInfoRes.status!= 200)
+            if(infoRes.status != 200)
                 {
-                    // if(pathName.toString() !== "/error?error=Configuration"&& pathName.toString() !== "/error?error=AccessDenied" && pathName.toString() !== "/" && pathName.toString() !== "/en" && pathName.toString() !== "/vi") router.push("/login")
-                    // setStatus('unauthenticated');
+                    if(pathName.toString() !== "/error?error=Configuration"&& pathName.toString() !== "/error?error=AccessDenied" && pathName.toString() !== "/" && pathName.toString() !== "/en" && pathName.toString() !== "/vi") router.push("/login")
+                    setStatus('unauthenticated');
                     return
                 }
             let session
@@ -56,11 +54,6 @@ export function SessionProvider({ children }) {
                 session= Object.assign({}, infoRes.data, {
                     sid: sid,
                 })
-            if(AdminInfoRes.status == 200)
-                session= Object.assign({}, AdminInfoRes.data, {
-                    sid: sid,
-                })
-            console.log(AdminInfoRes)
             setSession(session);
             setStatus('authenticated');
         };

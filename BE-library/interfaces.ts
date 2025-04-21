@@ -6,6 +6,23 @@ export interface ConfirmPayload {
     requestId: string,
     resultCode: number
 }
+export interface Device {
+    id: string;
+    action: string;
+    deviceName: string;
+    qrCode?: string;
+    status: string;
+    type: string;
+    updateDate: string;
+    createDate: string;
+}
+export interface NotificationConfig {
+    userId: string,
+    deviceId: string,
+    frequencyMinutes: number,
+    title: string,
+    description: string,
+}
 export interface PrintJobPayload {
     file_id: number,
     printer_id: number,
