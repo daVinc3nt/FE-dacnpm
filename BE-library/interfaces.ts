@@ -16,6 +16,17 @@ export interface Device {
     updateDate: string;
     createDate: string;
 }
+export interface Schedule {
+    id: string;
+    action: string;
+    actionTime: number;
+    conditon: string;
+    repeat: string;
+    lastActive: string;
+    time: string;
+    updateDate: string;
+    createDate: string;
+}
 export interface NotificationConfig {
     userId: string,
     deviceId: string,

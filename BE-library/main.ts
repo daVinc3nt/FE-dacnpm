@@ -1,6 +1,121 @@
 import axios, { AxiosResponse } from "axios";
-import { BulkCreateFullFlashCard, CheckExistAccount, ConfirmPayload, CreateFTag, CreateFullFlashCard, CreateFullPracticeFromTest, CreateFullQuiz, CreateFullTest, CreateTag, CreateTestFromQuizIds, Device, EmailResetPassword, FetchingType, GetRecord, InitRecord, LangVersion, LoginPayload, PrintJobPayload, RecordFetchingType, RefreshToken, RemarkWriting, ResendOTPPayload, SearchPayload, SignUpPayload, Skill, UpdateAccountPayload, UpdateAvatarPayload, UpdateFTag, UpdateFullFlashCard, UpdateFullQuiz, UpdateFullRecord, UpdateFullTest, UpdateQuiz, UpdateRecord, UpdateRecordConfig, UpdateTag, VerifyOtpForResetPasswordPayload, VerifyOtpPayload } from "./interfaces";
+import { BulkCreateFullFlashCard, CheckExistAccount, ConfirmPayload, CreateFTag, CreateFullFlashCard, CreateFullPracticeFromTest, CreateFullQuiz, CreateFullTest, CreateTag, CreateTestFromQuizIds, Device, EmailResetPassword, FetchingType, GetRecord, InitRecord, LangVersion, LoginPayload, PrintJobPayload, RecordFetchingType, RefreshToken, RemarkWriting, ResendOTPPayload, Schedule, SearchPayload, SignUpPayload, Skill, UpdateAccountPayload, UpdateAvatarPayload, UpdateFTag, UpdateFullFlashCard, UpdateFullQuiz, UpdateFullRecord, UpdateFullTest, UpdateQuiz, UpdateRecord, UpdateRecordConfig, UpdateTag, VerifyOtpForResetPasswordPayload, VerifyOtpPayload } from "./interfaces";
 import { UUID } from "crypto";
+
+export class ScheduleOperation {
+    private baseUrl: string;
+    private langQuery: string;
+
+    constructor() {
+        this.baseUrl = 'http://localhost:8000/api/v1/schedule';
+        this.langQuery = `lang=${LangVersion.vi}`;
+    }
+
+    setLanguage(lang: LangVersion) {
+        this.langQuery = `lang=${lang}`;
+    }
+
+    async create(payload: any, token: string) {
+        try {
+            const response: AxiosResponse = await axios.post(`${this.baseUrl}`, payload, {
+                withCredentials: true,
+                validateStatus: status => status >= 200 && status <= 500,
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+            });
+            
+            return {
+                success: response.data.success,
+                message: response.data.message,
+                data: response.data.data,
+                status: response.status
+            };
+        } 
+        catch (error: any) {
+            console.log("Error searching accounts: ", error?.response?.data);
+            console.error("Request that caused the error: ", error?.request);
+            return { success: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
+        }
+    }
+
+    async searchAll(token: string, payload: { 
+        id?: string; 
+        userId?: string; 
+        deviceId?: string; 
+        startDate?: string; 
+        endDate?: string; 
+    }) {
+        try {
+            const response: AxiosResponse = await axios.get(`${this.baseUrl}`, {
+                params:  payload,
+                withCredentials: true,
+                validateStatus: status => status >= 200 && status <= 500,
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+            });
+
+            return {
+                success: response.data.success,
+                message: response.data.message,
+                data: response.data.data,
+                status: response.status
+            };
+
+        } catch (error: any) {
+            console.log("Error searching devices: ", error?.response?.data);
+            console.error("Request that caused the error: ", error?.request);
+            throw new Error(error?.response?.data?.message || "An error occurred");
+        }
+    }
+
+    async delete(id: string, token: string) {
+        try {
+            const response: AxiosResponse = await axios.delete(`${this.baseUrl}/delete`, {
+                params: { id },
+                withCredentials: true,
+                validateStatus: status => status >= 200 && status <= 500,
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+            });
+            
+            return {
+                success: response.data.success,
+                message: response.data.message,
+                data: response.data.data,
+                status: response.status
+            };
+        } 
+        catch (error: any) {
+            console.log("Error updating account: ", error?.response?.data);
+            console.error("Request that caused the error: ", error?.request);
+            return { success: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
+        }
+    }
+
+    async updateSchedule(id: string, payload: any, token: string): Promise<string> {
+        try {
+            const response: AxiosResponse = await axios.put(`${this.baseUrl}`, payload, {
+                params: { id },
+                withCredentials: true,
+                validateStatus: status => status >= 200 && status <= 500,
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+            });
+
+            return response.data;
+        } catch (error: any) {
+            console.log("Error updating schedule: ", error?.response?.data);
+            console.error("Request that caused the error: ", error?.request);
+            throw new Error(error?.response?.data?.message || "An error occurred");
+        }
+    }
+
+}
+
 
 export class AuthOperation {
     private baseUrl: string;
@@ -928,7 +1043,7 @@ export class UserOperation {
     private langQuery: string;
 
     constructor() {
-        this.baseUrl = 'https://co3001-software-engineering-internal-kw83.onrender.com/api/v1/users';
+        this.baseUrl = 'http://localhost:8000/api/v1/user';
         this.langQuery = `lang=${LangVersion.vi}`;
     }
 
@@ -958,6 +1073,31 @@ export class UserOperation {
             console.error("Request that caused the error: ", error?.request);
             return { success: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
 		}
+    }
+    async searchByAuthen(token: string){
+        try {
+            const response: AxiosResponse = await axios.get(`${this.baseUrl}/info`, {
+                params:{
+                    Authorization: token
+                },
+                withCredentials: true,
+                validateStatus: status => status >= 200 && status <= 500,
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+            });
+
+            return {
+                success: response.data.success,
+                message: response.data.message,
+                data: response.data.data,
+                status: response.status
+            };
+
+        } catch (error: any) {
+            console.error("Request that caused the error: ", error?.request);
+            throw new Error(error?.response?.data?.message || "An error occurred");
+        }
     }
     async searchFilesById(id: string, token: string) {
         try {
