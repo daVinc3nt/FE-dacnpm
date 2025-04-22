@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useSession } from "@/providers/SessionProvider";
 import CustomLoadingElement from "../../loading";
 import { useTranslations } from "next-intl";
-import { PaymentOperation, DeviceOperation } from "@/BE-library/main";
+import { DeviceOperation } from "@/BE-library/main";
 import moment from "moment";
 import 'moment/locale/vi'; // Add this import to use Vietnamese locale
 import { TabSlider } from "@/components/SliderTab/TabSlider";
@@ -33,7 +33,6 @@ export default function Profile() {
 	const { session, status } = useSession();
 	const [chartData, setChartData] = useState<{ series: number[]; labels: string[]; colors: string[] } | null>(null);
 	const t = useTranslations("profile");
-	const action = new PaymentOperation();
 	const deviceAction = new DeviceOperation();
 
 	useEffect(() => {
