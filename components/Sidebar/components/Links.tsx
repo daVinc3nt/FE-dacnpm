@@ -39,16 +39,15 @@ export function SidebarLinks({ onClickRoute }: Props) {
     },
     {
       name: t("online_test"),
-      path: "/MyFarm",
+      path: "/device",
       icon: <IoLibrary className="h-6 w-6" />,
       type:"online_test",
     },
     {
       name: t("notes"),
-      path: "/buypage",
+      path: "/schedule",
       icon: <FaRegWindowRestore className="h-5 w-5 ml-0.5" />,
       type:"notes",
-      
     }
   ];
   const Protectedroutes = [

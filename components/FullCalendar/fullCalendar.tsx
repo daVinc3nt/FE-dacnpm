@@ -41,7 +41,7 @@ const StyleWrapper = styled.div`
     gap: 0.5rem;
 
     .fc-toolbar-title {
-      font-size: 1.25rem;
+      font-size: 1rem;
       font-weight: 600;
     }
 
