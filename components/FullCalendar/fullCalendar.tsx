@@ -22,6 +22,7 @@ const StyleWrapper = styled.div`
   display: flex;
   justify-content: center;
   padding: 1rem;
+  min-height: calc(100vh - 7.5rem);
 
   .fc {
     width: 100%;
@@ -223,11 +224,29 @@ export default function CustomCalendar() {
               initialView={initialView}
               locale={"en"}
               eventContent={renderEventContent}
-              dateClick={() => setModalOpen(true)}
+              // dateClick={() => setModalOpen(true)}
               eventClick={handleEventClick}
               events={session ? listEvents : []}
             />
           </StyleWrapper>
+        </motion.div>
+      </AnimatePresence>
+
+      <AnimatePresence mode="wait">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.4, ease: 'easeInOut' }}
+          className='w-full'
+        >
+          <button
+            onClick={() => setModalOpen(true)}
+            className="fixed bottom-6 right-6 z-50 w-14 h-14 flex items-center justify-center rounded-full bg-blue-600 text-white text-3xl font-bold shadow-lg hover:bg-blue-700 hover:scale-105 transition-transform duration-300"
+            title="Thêm mới"
+          >
+            +
+          </button>
         </motion.div>
       </AnimatePresence>
 
