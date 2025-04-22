@@ -1,6 +1,6 @@
 "use client"
 import { SearchAddition, SearchCriteria, SearchPayload } from '@/BE-library/interfaces';
-import { AccountOperation, AdminAccountOperation, AuthOperation } from '@/BE-library/main';
+import { AccountOperation, AuthOperation } from '@/BE-library/main';
 import Cookies from 'js-cookie';
 import { usePathname, useRouter } from 'next/navigation';
 import { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
@@ -37,7 +37,6 @@ export function SessionProvider({ children }) {
     const router =useRouter();
     const sid = getSid()
     const infoAction = new AccountOperation()
-    const adminInfoAction = new AdminAccountOperation()
     useEffect(() => {
         const fetchData = async () => {
             setSession(sid)

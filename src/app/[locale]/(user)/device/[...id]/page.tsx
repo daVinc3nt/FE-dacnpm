@@ -1,7 +1,6 @@
 "use client";
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { DeviceOperation, FileOperation, NotificationOperation } from "@/BE-library/main";
+import { useEffect, useState, useRef } from "react";
+import { DeviceOperation, NotificationOperation } from "@/BE-library/main";
 import { useSession } from "@/providers/SessionProvider";
 import AreaChartCard from "@/components/Chart/Line";
 import CustomLoadingElement from "../../loading";
@@ -34,6 +33,7 @@ interface DeviceType {
   status: string;
   type: string;
   updateDate: string;
+  speed?: number;
 }
 
 function getTopValues(data: DataType[], count: number = 20): number[] {
@@ -41,6 +41,28 @@ function getTopValues(data: DataType[], count: number = 20): number[] {
 }
 
 const notificationOperation = new NotificationOperation();
+
+function throttleTriggerAction(
+  newSpeed: number,
+  qrCode: string,
+  sessionSid: string,
+  throttleTimeout: React.MutableRefObject<NodeJS.Timeout | null>,
+  action: DeviceOperation
+) {
+  if (!throttleTimeout.current) {
+    throttleTimeout.current = setTimeout(async () => {
+      try {
+        await action.triggerAction(newSpeed.toString(), qrCode, sessionSid);
+        toast.success(`Tốc độ đã được cập nhật thành ${newSpeed}%`);
+      } catch (error) {
+        toast.error("Lỗi khi cập nhật tốc độ");
+        console.error("Error triggering action:", error);
+      } finally {
+        throttleTimeout.current = null; // Clear the timeout
+      }
+    }, 500); // 500ms delay
+  }
+}
 
 function DevicePage({
   params
@@ -54,6 +76,7 @@ function DevicePage({
   const action = new DeviceOperation();
   const [editingNotification, setEditingNotification] = useState<Notification>(null);
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const throttleTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const closePopup = () => {
     setOpen(false)
@@ -76,28 +99,28 @@ function DevicePage({
   };
 
   const handleSaveNotification = async (updatedNotification: Notification) => {
-    // if (session && device) {
-    //   const notificationWithIds = {
-    //     ...updatedNotification,
-    //     userId: session.id,
-    //     deviceId: device.id,
-    //   };
+    if (session && device) {
+      const notificationWithIds = {
+        ...updatedNotification,
+        userId: session.id,
+        deviceId: device.id,
+      };
 
-    //   if (device && session) {
-    //     toast.promise(
-    //       notificationOperation.createOrUpdate(notificationWithIds, session.sid),
-    //       {
-    //         loading: 'Đang cập nhật...',
-    //         success: async (data) => {
-    //           setEditingNotification(data.data);
-    //           setOpen(false); // Exit edit mode after successful update
-    //           return 'Cập nhật thành công!';
-    //         },
-    //         error: 'Lỗi khi cập nhật',
-    //       }
-    //     );
-    //   }
-    // }
+      if (device && session) {
+        toast.promise(
+          notificationOperation.createOrUpdate(notificationWithIds, session.sid),
+          {
+            loading: 'Đang cập nhật...',
+            success: async (data) => {
+              setEditingNotification(data.data);
+              setOpen(false); // Exit edit mode after successful update
+              return 'Cập nhật thành công!';
+            },
+            error: 'Lỗi khi cập nhật',
+          }
+        );
+      }
+    }
   };
 
   useEffect(() => {
@@ -204,6 +227,36 @@ function DevicePage({
                     Cài đặt thông báo
                   </button>
                 </div>
+
+                {/* Speed Slider */}
+                {device.status == "Manual" && (
+                  <div className="mt-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Tốc độ thiết bị (0 - 100)
+                    </label>
+                    <input
+                      type="range"
+                      min="0"
+                      max="100"
+                      value={device?.speed || 0}
+                      onChange={(e) => {
+                        const newSpeed = Number(e.target.value);
+                        setDevice((prev) => ({
+                          ...prev,
+                          speed: newSpeed,
+                        }));
+
+                        if (session && device?.qrCode) {
+                          throttleTriggerAction(newSpeed, device.qrCode, session.sid, throttleTimeout, action);
+                        }
+                      }}
+                      className="w-full"
+                    />
+                    <div className="text-center mt-2 text-sm text-gray-600">
+                      {device?.speed || 0}%
+                    </div>
+                  </div>
+                )}
               </div>
               {data && <div className="h-1/2 w-full flex flex-col">
                 <AreaChartCard

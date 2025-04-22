@@ -4,8 +4,7 @@ import Image from "next/image";
 import { useSession } from "@/providers/SessionProvider";
 import CustomLoadingElement from "../../loading";
 import { useTranslations } from "next-intl";
-import { PaymentOperation, DeviceOperation } from "@/BE-library/main";
-import { FaArrowCircleRight } from "react-icons/fa";
+import {  DeviceOperation } from "@/BE-library/main";
 import { IoWarning } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 import AddDeviceModal from "../_component/addModal"; // Import AddDeviceModal
