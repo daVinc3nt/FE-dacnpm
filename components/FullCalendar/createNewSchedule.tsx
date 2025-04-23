@@ -47,7 +47,10 @@ export default function CreateEntityModal({ userId, listDevice, isOpen, onClose,
         repeat: '',
         time: '',
       })
-      window.location.reload();
+
+      if (typeof window !== "undefined") {
+        window.location.reload();
+      }
     }
   };
 

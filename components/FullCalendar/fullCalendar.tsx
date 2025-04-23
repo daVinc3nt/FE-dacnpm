@@ -192,7 +192,10 @@ export default function CustomCalendar() {
 
   const deleteSchedule = async () => {
     await action.delete(selectedEvent.data.id, session.sid)
-    window.location.reload();
+    
+      if (typeof window !== "undefined") {
+        window.location.reload();
+      }
   };
 
   const updateSchedule = async () => {
@@ -205,7 +208,10 @@ export default function CustomCalendar() {
         time: formData.time
       }
       , session.sid)
-    window.location.reload();
+    
+      if (typeof window !== "undefined") {
+        window.location.reload();
+      }
   };
 
   return (

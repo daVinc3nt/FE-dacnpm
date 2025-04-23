@@ -14,22 +14,22 @@ interface Device {
 }
 
 interface AddDeviceModalProps {
+  userID: string,
   onClose: () => void;
   onSave: (device: Device) => void;
 }
 
-export default function AddDeviceModal({ onClose, onSave }: AddDeviceModalProps) {
+export default function AddDeviceModal({ userID, onClose, onSave }: AddDeviceModalProps) {
   const [method, setMethod] = useState<"qr" | "manual">("qr");
   const [qrCode, setQrCode] = useState("");
   const [qrRepo, setRepo] = useState("");
   const [deviceName, setDeviceName] = useState("");
   const [action, setAction] = useState<"view" | "trigger">("view");
-  const [status, setstatus] = useState("");
-  const [userId, setUserId] = useState("");
-  const {session} =useSession()
+  const [status, setstatus] = useState("Auto");
+  const { session } = useSession()
   const [type, setType] = useState<"light" | "soil" | "air" | "pump">("light");
   const [showQrScanner, setShowQrScanner] = useState(false);
-//   const {session, status} =useSession()
+  //   const {session, status} =useSession()
   const parseQrCode = (code: string) => {
     try {
       const parsedData = JSON.parse(code); // Parse the JSON string
@@ -37,7 +37,6 @@ export default function AddDeviceModal({ onClose, onSave }: AddDeviceModalProps)
       setAction(parsedData.action || "view");
       setQrCode(parsedData.qrCode || "");
       setstatus(parsedData.status || "");
-      setUserId(session.id || "");
       setType(parsedData.type || "light");
       console.log(parsedData)
     } catch (error) {
@@ -51,10 +50,9 @@ export default function AddDeviceModal({ onClose, onSave }: AddDeviceModalProps)
       action,
       qrCode: method === "qr" ? qrCode : undefined,
       status,
-      userId,
+      userId: userID,
       type,
     };
-    console.log(newDevice)
     onSave(newDevice);
   };
 
@@ -141,25 +139,24 @@ export default function AddDeviceModal({ onClose, onSave }: AddDeviceModalProps)
               </div>
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  status
+                  Status
                 </label>
-                <input
-                  type="text"
-                  value={status}
-                  onChange={(e) => setstatus(e.target.value)}
+                <select
+                  value={action}
+                  disabled = {type === "light"}
+                  onChange={(e) => setstatus(e.target.value as "Auto" | "Manual" | "Manual Only")}
                   className="w-full border border-gray-300 rounded-md p-2"
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  User ID
-                </label>
-                <input
-                  type="text"
-                  value={userId}
-                  onChange={(e) => setUserId(e.target.value)}
-                  className="w-full border border-gray-300 rounded-md p-2"
-                />
+                >
+                  {type !== "light" ? (
+                    <>
+                      <option value="Auto">Auto</option>
+                      <option value="Manual">Manual</option>
+                      <option value="Manual Only">Manual Only</option>
+                    </>
+                  ) : (
+                    <option value="Auto">Auto</option>
+                  )}
+                </select>
               </div>
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-1">

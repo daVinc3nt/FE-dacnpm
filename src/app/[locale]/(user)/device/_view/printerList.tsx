@@ -4,72 +4,76 @@ import Image from "next/image";
 import { useSession } from "@/providers/SessionProvider";
 import CustomLoadingElement from "../../loading";
 import { useTranslations } from "next-intl";
-import {  DeviceOperation } from "@/BE-library/main";
+import { DeviceOperation } from "@/BE-library/main";
 import { IoWarning } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 import AddDeviceModal from "../_component/addModal"; // Import AddDeviceModal
 import { toast } from "sonner";
 
 function getStatusClass(status) {
-	switch (status) {
+    switch (status) {
         case 'active':
-          return 'text-green-500';
+            return 'text-green-500';
         case 'inactive':
-          return 'text-red-500';
+            return 'text-red-500';
         case 'occupied':
-          return 'text-yellow-500'; // Add a color for occupied status
+            return 'text-yellow-500'; // Add a color for occupied status
         case 'deleted':
-          return 'text-gray-500'; // Add a color for deleted status
+            return 'text-gray-500'; // Add a color for deleted status
         default:
-          return ''; // Or a default class if needed
-	}
+            return ''; // Or a default class if needed
+    }
 }
 interface Props {
+    userID: string,
     setView: Dispatch<SetStateAction<"device" | "uploadFile">>;
 }
-export default function PrinterList({setView}:Props) {
-	const {session, status} =useSession()
-	const [ListPayment, setListPayment] = useState(null)
-	const [showAddModal, setShowAddModal] = useState(false); // State to control AddDeviceModal visibility
-	const t =useTranslations("profile")
-	const action = new DeviceOperation()
+export default function PrinterList({ userID, setView }: Props) {
+    const { session, status } = useSession()
+    const [ListPayment, setListPayment] = useState(null)
+    const [showAddModal, setShowAddModal] = useState(false); // State to control AddDeviceModal visibility
+    const t = useTranslations("profile")
+    const action = new DeviceOperation()
     const router = useRouter()
 
-	const handleAddDevice = async (newDevice) => {
-		if (session) {
-			toast.promise(
-				action.create(newDevice, session.sid),
-				{
-					loading: "Đang thêm thiết bị...",
-					success: async (response) => {
+    const handleAddDevice = async (newDevice) => {
+        if (session) {
+            toast.promise(
+                action.create(newDevice, session.sid),
+                {
+                    loading: "Đang thêm thiết bị...",
+                    success: async (response) => {
                         console.log(response)
-						setShowAddModal(false); // Close the modal after saving
-						setTimeout(() => {
-							window.location.reload(); // Reload the page after a delay
-						}, 500); // 500ms delay
-						return "Thêm thiết bị thành công!";
-					},
-					error: "Lỗi khi thêm thiết bị",
-				}
-			);
-		}
-	};
+                        setShowAddModal(false); // Close the modal after saving
+                        setTimeout(() => {
 
-	useEffect(() => {
+                            if (typeof window !== "undefined") {
+                                window.location.reload();
+                            }
+                        }, 500); // 500ms delay
+                        return "Thêm thiết bị thành công!";
+                    },
+                    error: "Lỗi khi thêm thiết bị",
+                }
+            );
+        }
+    };
+
+    useEffect(() => {
         const fetchData = async () => {
             // const res = await action.searchStudentByID(session.id, session.sid)
-			const res = await action.searchAll(session.sid, {})
+            const res = await action.searchAll(session.sid, {})
             console.log(res)
-			setListPayment(res.data)
+            setListPayment(res.data)
         };
-		if (session && status == "authenticated")
-        	fetchData();
+        if (session && status == "authenticated")
+            fetchData();
         console.log(status)
     }, [status]);
-	return (
-		<>		 
+    return (
+        <>
             <div className="flex absolute w-full h-full gap-10 items-center container mx-auto">
-                {status === "authenticated" && session ? 
+                {status === "authenticated" && session ?
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
                         {ListPayment?.map(({
                             action,
@@ -82,49 +86,50 @@ export default function PrinterList({setView}:Props) {
                             updateDate,
                         }) => (
                             <div
-                            className="flex justify-between bg-white items-center
+                                className="flex justify-between bg-white items-center
                             text-lg cursor-pointer font-medium w-full h-72 px-10 rounded-lg shadow-md hover:scale-105 duration-150 ease-in"
-                            key={id}
-                            onClick={
-                                ()=>{
-                                router.push(`/device/${id}`)
+                                key={id}
+                                onClick={
+                                    () => {
+                                        router.push(`/device/${id}`)
+                                    }
                                 }
-                            }
                             >
-                            <div className="flex flex-col gap-10 items-center">
-                                <Image 
-                                    src={type? `/photos/${type}.png` : "/photos/Printer.png"} 
-                                    alt="device"
-                                    className="lg:block hidden" 
-                                    width={100} 
-                                    height={100} />
-                                <div className="flex flex-col items-start">
-                                    <div className="font-bold text-xl">{deviceName} - {type} <span className={`${getStatusClass(status)}`}>{status}</span></div>
+                                <div className="flex flex-col gap-10 items-center">
+                                    <Image
+                                        src={type ? `/photos/${type}.png` : "/photos/Printer.png"}
+                                        alt="device"
+                                        className="lg:block hidden"
+                                        width={100}
+                                        height={100} />
+                                    <div className="flex flex-col items-start">
+                                        <div className="font-bold text-xl">{deviceName} - {type} <span className={`${getStatusClass(status)}`}>{status}</span></div>
+                                    </div>
                                 </div>
-                            </div>
-                           
+
                             </div>
                         ))}
                     </div>
-                :<CustomLoadingElement/>
+                    : <CustomLoadingElement />
                 }
             </div>
 
-			{/* Add Device Modal */}
-			{showAddModal && (
-				<AddDeviceModal
-					onClose={() => setShowAddModal(false)}
-					onSave={handleAddDevice}
-				/>
-			)}
+            {/* Add Device Modal */}
+            {showAddModal && (
+                <AddDeviceModal
+                    userID={userID}
+                    onClose={() => setShowAddModal(false)}
+                    onSave={handleAddDevice}
+                />
+            )}
 
-			{/* Floating Add Button */}
-			<button
-				onClick={() => setShowAddModal(true)}
-				className="fixed bottom-10 right-10 bg-blue-500 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg hover:bg-blue-600"
-			>
-				+
-			</button>
-		</>
-	);
+            {/* Floating Add Button */}
+            <button
+                onClick={() => setShowAddModal(true)}
+                className="fixed bottom-10 right-10 bg-blue-500 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg hover:bg-blue-600"
+            >
+                +
+            </button>
+        </>
+    );
 }

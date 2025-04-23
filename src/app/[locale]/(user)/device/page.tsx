@@ -9,7 +9,7 @@ import 'swiper/css/navigation';
 
 import { useSession } from "@/providers/SessionProvider";
 import { UpdateAccountPayload } from "@/BE-library/interfaces";
-import { DeviceOperation } from "@/BE-library/main";
+import { DeviceOperation, UserOperation } from "@/BE-library/main";
 import PrinterList from "./_view/printerList";
 import UploadFile from "./_view/uploadFile";
 import { useRouter } from "next/navigation";
@@ -22,7 +22,23 @@ export default function Print() {
 	const fileInputRef = useRef(null);
 	const [view, setView] = useState<"device"|"uploadFile">("device");
 	const action = new DeviceOperation();
-
+	const userAction =  new UserOperation();
+	const [usrId, setusrId] = useState('')
+	
+	useEffect(() => {
+		if (!session?.sid) return;
+	  
+		const fetchD = async () => {
+		  try {
+			const user = await userAction.searchByAuthen(session.sid);
+			setusrId(user.data.id);
+		  } catch (error) {
+			console.error("User fetch error:", error?.response?.data || error.message);
+		  }
+		};
+		fetchD();
+	  }, [session]);
+	  
 
 	return (
 		<>
@@ -36,7 +52,7 @@ export default function Print() {
 						className="absolute bottom-0 left-0"
 					/>		
 				</div>
-				{view =="device" && <PrinterList setView={setView}/>}
+				{view =="device" && <PrinterList userID={usrId} setView={setView}/>}
 			</div>
 		</>
 		
