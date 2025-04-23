@@ -57,7 +57,7 @@ var ScheduleOperation = /** @class */ (function () {
                         _c.trys.push([0, 2, , 3]);
                         return [4 /*yield*/, axios_1.default.post("".concat(this.baseUrl), payload, {
                                 withCredentials: true,
-                                validateStatus: function (status) { return status >= 200 && status <= 500; },
+                                validateStatus: function (status) { return status >= 200 && status < 300; },
                                 headers: {
                                     Authorization: "Bearer ".concat(token)
                                 },
@@ -91,7 +91,7 @@ var ScheduleOperation = /** @class */ (function () {
                         return [4 /*yield*/, axios_1.default.get("".concat(this.baseUrl), {
                                 params: payload,
                                 withCredentials: true,
-                                validateStatus: function (status) { return status >= 200 && status <= 500; },
+                                validateStatus: function (status) { return status >= 200 && status < 300; },
                                 headers: {
                                     Authorization: "Bearer ".concat(token)
                                 },
@@ -125,7 +125,7 @@ var ScheduleOperation = /** @class */ (function () {
                         return [4 /*yield*/, axios_1.default.delete("".concat(this.baseUrl, "/delete"), {
                                 params: { id: id },
                                 withCredentials: true,
-                                validateStatus: function (status) { return status >= 200 && status <= 500; },
+                                validateStatus: function (status) { return status >= 200 && status < 300; },
                                 headers: {
                                     Authorization: "Bearer ".concat(token)
                                 },
@@ -159,7 +159,7 @@ var ScheduleOperation = /** @class */ (function () {
                         return [4 /*yield*/, axios_1.default.put("".concat(this.baseUrl), payload, {
                                 params: { id: id },
                                 withCredentials: true,
-                                validateStatus: function (status) { return status >= 200 && status <= 500; },
+                                validateStatus: function (status) { return status >= 200 && status < 300; },
                                 headers: {
                                     Authorization: "Bearer ".concat(token)
                                 },
@@ -196,7 +196,7 @@ var AuthOperation = /** @class */ (function () {
                         return [4 /*yield*/, axios_1.default.get("".concat(this.baseUrl, "/get"), {
                                 params: { limit: limit, page: page },
                                 withCredentials: true,
-                                validateStatus: function (status) { return status >= 200 && status <= 500; },
+                                validateStatus: function (status) { return status >= 200 && status < 300; },
                                 headers: {
                                     Authorization: "Bearer ".concat(token)
                                 },
@@ -229,7 +229,7 @@ var AuthOperation = /** @class */ (function () {
                         _c.trys.push([0, 2, , 3]);
                         return [4 /*yield*/, axios_1.default.post("".concat(this.baseUrl, "/signup?").concat(this.langQuery), payload, {
                                 withCredentials: true,
-                                validateStatus: function (status) { return status >= 200 && status <= 500; }
+                                validateStatus: function (status) { return status >= 200 && status < 300; }
                             })];
                     case 1:
                         response = _c.sent();
@@ -259,7 +259,7 @@ var AuthOperation = /** @class */ (function () {
                         _c.trys.push([0, 2, , 3]);
                         return [4 /*yield*/, axios_1.default.post("".concat(this.baseUrl, "/login"), payload, {
                                 withCredentials: true,
-                                validateStatus: function (status) { return status >= 200 && status <= 500; },
+                                validateStatus: function (status) { return status >= 200 && status < 300; },
                             })];
                     case 1:
                         response = _c.sent();
@@ -300,7 +300,7 @@ var AccountOperation = /** @class */ (function () {
                         _c.trys.push([0, 2, , 3]);
                         return [4 /*yield*/, axios_1.default.post("".concat(this.baseUrl, "/search?").concat(this.langQuery), payload, {
                                 withCredentials: true,
-                                validateStatus: function (status) { return status >= 200 && status <= 500; },
+                                validateStatus: function (status) { return status >= 200 && status < 300; },
                                 headers: {
                                     Authorization: "Bearer ".concat(token)
                                 },
@@ -333,7 +333,7 @@ var AccountOperation = /** @class */ (function () {
                         _c.trys.push([0, 2, , 3]);
                         return [4 /*yield*/, axios_1.default.get("".concat(this.baseUrl, "/search/").concat(id, "?").concat(this.langQuery), {
                                 withCredentials: true,
-                                validateStatus: function (status) { return status >= 200 && status <= 500; },
+                                validateStatus: function (status) { return status >= 200 && status < 300; },
                                 headers: {
                                     Authorization: "Bearer ".concat(token)
                                 },
@@ -366,7 +366,7 @@ var AccountOperation = /** @class */ (function () {
                         _c.trys.push([0, 2, , 3]);
                         return [4 /*yield*/, axios_1.default.put("".concat(this.baseUrl, "/update/").concat(id, "?").concat(this.langQuery), payload, {
                                 withCredentials: true,
-                                validateStatus: function (status) { return status >= 200 && status <= 500; },
+                                validateStatus: function (status) { return status >= 200 && status < 300; },
                                 headers: {
                                     Authorization: "Bearer ".concat(token)
                                 },
@@ -401,7 +401,7 @@ var AccountOperation = /** @class */ (function () {
                         formData.append('avatar', payload.avatar);
                         return [4 /*yield*/, axios_1.default.put("".concat(this.baseUrl, "/avatar/update/").concat(id, "?").concat(this.langQuery), formData, {
                                 withCredentials: true,
-                                validateStatus: function (status) { return status >= 200 && status <= 500; },
+                                validateStatus: function (status) { return status >= 200 && status < 300; },
                                 headers: {
                                     Authorization: "Bearer ".concat(token)
                                 },
@@ -435,7 +435,7 @@ var AccountOperation = /** @class */ (function () {
                         _c.trys.push([0, 2, , 3]);
                         return [4 /*yield*/, axios_1.default.get("".concat(this.baseUrl, "/avatar/get/").concat(id, "?").concat(this.langQuery), {
                                 withCredentials: true,
-                                validateStatus: function (status) { return status >= 200 && status <= 500; },
+                                validateStatus: function (status) { return status >= 200 && status < 300; },
                                 headers: {
                                     Authorization: "Bearer ".concat(token)
                                 },
@@ -469,7 +469,7 @@ var AccountOperation = /** @class */ (function () {
                         _c.trys.push([0, 2, , 3]);
                         return [4 /*yield*/, axios_1.default.get("".concat(this.baseUrl, "/count?").concat(this.langQuery), {
                                 withCredentials: true,
-                                validateStatus: function (status) { return status >= 200 && status <= 500; },
+                                validateStatus: function (status) { return status >= 200 && status < 300; },
                                 headers: {
                                     Authorization: "Bearer ".concat(token)
                                 },
@@ -502,7 +502,7 @@ var AccountOperation = /** @class */ (function () {
                         _c.trys.push([0, 2, , 3]);
                         return [4 /*yield*/, axios_1.default.get("".concat(this.baseUrl, "/info"), {
                                 withCredentials: true,
-                                validateStatus: function (status) { return status >= 200 && status <= 500; },
+                                validateStatus: function (status) { return status >= 200 && status < 300; },
                                 headers: {
                                     Authorization: "Bearer ".concat(token)
                                 },
@@ -535,7 +535,7 @@ var AccountOperation = /** @class */ (function () {
                         _c.trys.push([0, 2, , 3]);
                         return [4 /*yield*/, axios_1.default.post("".concat(this.baseUrl, "/password/reset?").concat(this.langQuery), email, {
                                 withCredentials: true,
-                                validateStatus: function (status) { return status >= 200 && status <= 500; }
+                                validateStatus: function (status) { return status >= 200 && status < 300; }
                             })];
                     case 1:
                         response = _c.sent();
@@ -565,7 +565,7 @@ var AccountOperation = /** @class */ (function () {
                         _b.trys.push([0, 2, , 3]);
                         return [4 /*yield*/, axios_1.default.post("".concat(this.baseUrl, "/check?").concat(this.langQuery), email, {
                                 withCredentials: true,
-                                validateStatus: function (status) { return status >= 200 && status <= 500; }
+                                validateStatus: function (status) { return status >= 200 && status < 300; }
                             })];
                     case 1:
                         response = _b.sent();
@@ -595,7 +595,7 @@ var AccountOperation = /** @class */ (function () {
                         _c.trys.push([0, 2, , 3]);
                         return [4 /*yield*/, axios_1.default.post("".concat(this.baseUrl, "/otp/verify?").concat(this.langQuery), payload, {
                                 withCredentials: true,
-                                validateStatus: function (status) { return status >= 200 && status <= 500; }
+                                validateStatus: function (status) { return status >= 200 && status < 300; }
                             })];
                     case 1:
                         response = _c.sent();
@@ -636,7 +636,7 @@ var DeviceOperation = /** @class */ (function () {
                         _c.trys.push([0, 2, , 3]);
                         return [4 /*yield*/, axios_1.default.post("".concat(this.baseUrl, "/add"), payload, {
                                 withCredentials: true,
-                                validateStatus: function (status) { return status >= 200 && status <= 500; },
+                                validateStatus: function (status) { return status >= 200 && status < 300; },
                                 headers: {
                                     Authorization: "Bearer ".concat(token)
                                 },
@@ -673,7 +673,7 @@ var DeviceOperation = /** @class */ (function () {
                         return [4 /*yield*/, axios_1.default.get("".concat(this.baseUrl), {
                                 params: payload,
                                 withCredentials: true,
-                                validateStatus: function (status) { return status >= 200 && status <= 500; },
+                                validateStatus: function (status) { return status >= 200 && status < 300; },
                                 headers: {
                                     Authorization: "Bearer ".concat(token)
                                 },
@@ -706,7 +706,7 @@ var DeviceOperation = /** @class */ (function () {
                         _c.trys.push([0, 2, , 3]);
                         return [4 /*yield*/, axios_1.default.put("".concat(this.baseUrl, "/").concat(id), payload, {
                                 withCredentials: true,
-                                validateStatus: function (status) { return status >= 200 && status <= 500; },
+                                validateStatus: function (status) { return status >= 200 && status < 300; },
                                 headers: {
                                     Authorization: "Bearer ".concat(token)
                                 },
@@ -739,7 +739,7 @@ var DeviceOperation = /** @class */ (function () {
                         _c.trys.push([0, 2, , 3]);
                         return [4 /*yield*/, axios_1.default.delete("".concat(this.baseUrl, "/").concat(id), {
                                 withCredentials: true,
-                                validateStatus: function (status) { return status >= 200 && status <= 500; },
+                                validateStatus: function (status) { return status >= 200 && status < 300; },
                                 headers: {
                                     Authorization: "Bearer ".concat(token)
                                 },
@@ -773,7 +773,7 @@ var DeviceOperation = /** @class */ (function () {
                         return [4 /*yield*/, axios_1.default.get("".concat(this.baseUrl, "/getdata"), {
                                 params: { deviceId: deviceId },
                                 withCredentials: true,
-                                validateStatus: function (status) { return status >= 200 && status <= 500; },
+                                validateStatus: function (status) { return status >= 200 && status < 300; },
                                 headers: {
                                     Authorization: "Bearer ".concat(token)
                                 },
@@ -802,7 +802,7 @@ var DeviceOperation = /** @class */ (function () {
                         return [4 /*yield*/, axios_1.default.put("".concat(this.baseUrl, "/update"), payload, {
                                 params: { id: id },
                                 withCredentials: true,
-                                validateStatus: function (status) { return status >= 200 && status <= 500; },
+                                validateStatus: function (status) { return status >= 200 && status < 300; },
                                 headers: {
                                     Authorization: "Bearer ".concat(token)
                                 },
@@ -836,7 +836,7 @@ var DeviceOperation = /** @class */ (function () {
                         return [4 /*yield*/, axios_1.default.get("".concat(this.baseUrl, "/first-data-points"), {
                                 params: { userId: userId },
                                 withCredentials: true,
-                                validateStatus: function (status) { return status >= 200 && status <= 500; },
+                                validateStatus: function (status) { return status >= 200 && status < 300; },
                                 headers: {
                                     Authorization: "Bearer ".concat(token)
                                 },
@@ -871,9 +871,9 @@ var DeviceOperation = /** @class */ (function () {
                     case 1:
                         _d.trys.push([1, 3, , 4]);
                         return [4 /*yield*/, axios_1.default.post("".concat(this.baseUrl, "/triggeraction"), null, {
-                                params: { value: value, qrCode: qrCode },
+                                params: { qrCode: qrCode, value: value },
                                 withCredentials: true,
-                                validateStatus: function (status) { return status >= 200 && status <= 500; },
+                                validateStatus: function (status) { return status >= 200 && status < 300; },
                                 headers: {
                                     Authorization: "Bearer ".concat(token)
                                 },
@@ -912,7 +912,7 @@ var UserOperation = /** @class */ (function () {
                         return [4 /*yield*/, axios_1.default.get("".concat(this.baseUrl, "/get"), {
                                 params: { limit: limit, page: page },
                                 withCredentials: true,
-                                validateStatus: function (status) { return status >= 200 && status <= 500; },
+                                validateStatus: function (status) { return status >= 200 && status < 300; },
                                 headers: {
                                     Authorization: "Bearer ".concat(token)
                                 },
@@ -948,7 +948,7 @@ var UserOperation = /** @class */ (function () {
                                     Authorization: token
                                 },
                                 withCredentials: true,
-                                validateStatus: function (status) { return status >= 200 && status <= 500; },
+                                validateStatus: function (status) { return status >= 200 && status < 300; },
                                 headers: {
                                     Authorization: "Bearer ".concat(token)
                                 },
@@ -980,7 +980,7 @@ var UserOperation = /** @class */ (function () {
                         _c.trys.push([0, 2, , 3]);
                         return [4 /*yield*/, axios_1.default.get("".concat(this.baseUrl, "/").concat(id), {
                                 withCredentials: true,
-                                validateStatus: function (status) { return status >= 200 && status <= 500; },
+                                validateStatus: function (status) { return status >= 200 && status < 300; },
                                 headers: {
                                     Authorization: "Bearer ".concat(token)
                                 },
@@ -1013,7 +1013,7 @@ var UserOperation = /** @class */ (function () {
                         _c.trys.push([0, 2, , 3]);
                         return [4 /*yield*/, axios_1.default.delete("".concat(this.baseUrl, "/delete/").concat(id, "?").concat(this.langQuery), {
                                 withCredentials: true,
-                                validateStatus: function (status) { return status >= 200 && status <= 500; },
+                                validateStatus: function (status) { return status >= 200 && status < 300; },
                                 headers: {
                                     Authorization: "Bearer ".concat(token)
                                 },
@@ -1057,7 +1057,7 @@ var NotificationOperation = /** @class */ (function () {
                         _c.trys.push([0, 2, , 3]);
                         return [4 /*yield*/, axios_1.default.post("".concat(this.baseUrl), payload, {
                                 withCredentials: true,
-                                validateStatus: function (status) { return status >= 200 && status <= 500; },
+                                validateStatus: function (status) { return status >= 200 && status < 300; },
                                 headers: {
                                     Authorization: "Bearer ".concat(token)
                                 },
@@ -1090,7 +1090,7 @@ var NotificationOperation = /** @class */ (function () {
                         _c.trys.push([0, 2, , 3]);
                         return [4 /*yield*/, axios_1.default.get("".concat(this.baseUrl, "/").concat(userId, "/").concat(deviceId), {
                                 withCredentials: true,
-                                validateStatus: function (status) { return status >= 200 && status <= 500; },
+                                validateStatus: function (status) { return status >= 200 && status < 300; },
                                 headers: {
                                     Authorization: "Bearer ".concat(token)
                                 },
@@ -1123,7 +1123,7 @@ var NotificationOperation = /** @class */ (function () {
                         _c.trys.push([0, 2, , 3]);
                         return [4 /*yield*/, axios_1.default.put("".concat(this.baseUrl, "/").concat(userId, "/").concat(deviceId), payload, {
                                 withCredentials: true,
-                                validateStatus: function (status) { return status >= 200 && status <= 500; },
+                                validateStatus: function (status) { return status >= 200 && status < 300; },
                                 headers: {
                                     Authorization: "Bearer ".concat(token)
                                 },
@@ -1156,7 +1156,7 @@ var NotificationOperation = /** @class */ (function () {
                         _c.trys.push([0, 2, , 3]);
                         return [4 /*yield*/, axios_1.default.delete("".concat(this.baseUrl, "/").concat(userId, "/").concat(deviceId), {
                                 withCredentials: true,
-                                validateStatus: function (status) { return status >= 200 && status <= 500; },
+                                validateStatus: function (status) { return status >= 200 && status < 300; },
                                 headers: {
                                     Authorization: "Bearer ".concat(token)
                                 },
