@@ -52,7 +52,7 @@ function throttleTriggerAction(
   if (!throttleTimeout.current) {
     throttleTimeout.current = setTimeout(async () => {
       try {
-        await action.triggerAction(newSpeed.toString(), qrCode, sessionSid);
+        await action.triggerAction(qrCode, newSpeed.toString() ,sessionSid);
         toast.success(`Tốc độ đã được cập nhật thành ${newSpeed}%`);
       } catch (error) {
         toast.error("Lỗi khi cập nhật tốc độ");
@@ -238,7 +238,7 @@ function DevicePage({
                       type="range"
                       min="0"
                       max="100"
-                      value={device?.speed || 0}
+                      value={getTopValues(data)[0] || 0}
                       onChange={(e) => {
                         const newSpeed = Number(e.target.value);
                         setDevice((prev) => ({
@@ -253,7 +253,7 @@ function DevicePage({
                       className="w-full"
                     />
                     <div className="text-center mt-2 text-sm text-gray-600">
-                      {device?.speed || 0}%
+                      {getTopValues(data)[0]|| 0}%
                     </div>
                   </div>
                 )}

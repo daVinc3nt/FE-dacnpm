@@ -19,7 +19,7 @@ export class ScheduleOperation {
         try {
             const response: AxiosResponse = await axios.post(`${this.baseUrl}`, payload, {
                 withCredentials: true,
-                validateStatus: status => status >= 200 && status <= 500,
+                validateStatus: status => status >= 200 && status < 300,
                 headers: {
                     Authorization: `Bearer ${token}`
                 },
@@ -50,7 +50,7 @@ export class ScheduleOperation {
             const response: AxiosResponse = await axios.get(`${this.baseUrl}`, {
                 params:  payload,
                 withCredentials: true,
-                validateStatus: status => status >= 200 && status <= 500,
+                validateStatus: status => status >= 200 && status < 300,
                 headers: {
                     Authorization: `Bearer ${token}`
                 },
@@ -75,7 +75,7 @@ export class ScheduleOperation {
             const response: AxiosResponse = await axios.delete(`${this.baseUrl}/delete`, {
                 params: { id },
                 withCredentials: true,
-                validateStatus: status => status >= 200 && status <= 500,
+                validateStatus: status => status >= 200 && status < 300,
                 headers: {
                     Authorization: `Bearer ${token}`
                 },
@@ -100,7 +100,7 @@ export class ScheduleOperation {
             const response: AxiosResponse = await axios.put(`${this.baseUrl}`, payload, {
                 params: { id },
                 withCredentials: true,
-                validateStatus: status => status >= 200 && status <= 500,
+                validateStatus: status => status >= 200 && status < 300,
                 headers: {
                     Authorization: `Bearer ${token}`
                 },
@@ -130,7 +130,7 @@ export class AuthOperation {
 			const response: AxiosResponse = await axios.get(`${this.baseUrl}/get`, {
                 params: {limit, page},
 				withCredentials: true,
-                validateStatus: status => status >= 200 && status <= 500,
+                validateStatus: status => status >= 200 && status < 300,
                 headers: {
                     Authorization: `Bearer ${token}`
                 },
@@ -153,7 +153,7 @@ export class AuthOperation {
         try {
 			const response: AxiosResponse = await axios.post(`${this.baseUrl}/signup?${this.langQuery}`, payload, {
 				withCredentials: true,
-                validateStatus: status => status >= 200 && status <= 500
+                validateStatus: status => status >= 200 && status < 300
 			});
 			
 			return {
@@ -174,7 +174,7 @@ export class AuthOperation {
        try {
 			const response: AxiosResponse = await axios.post(`${this.baseUrl}/login`,payload,{
 				withCredentials: true,
-                validateStatus: status => status >= 200 && status <= 500,
+                validateStatus: status => status >= 200 && status < 300,
 			});
 			
 			return {
@@ -208,7 +208,7 @@ export class AccountOperation {
         try {
 			const response: AxiosResponse = await axios.post(`${this.baseUrl}/search?${this.langQuery}`, payload, {
 				withCredentials: true,
-                validateStatus: status => status >= 200 && status <= 500,
+                validateStatus: status => status >= 200 && status < 300,
                 headers: {
                     Authorization: `Bearer ${token}`
                 },
@@ -232,7 +232,7 @@ export class AccountOperation {
         try {
 			const response: AxiosResponse = await axios.get(`${this.baseUrl}/search/${id}?${this.langQuery}`, {
 				withCredentials: true,
-                validateStatus: status => status >= 200 && status <= 500,
+                validateStatus: status => status >= 200 && status < 300,
                 headers: {
                     Authorization: `Bearer ${token}`
                 },
@@ -256,7 +256,7 @@ export class AccountOperation {
         try {
 			const response: AxiosResponse = await axios.put(`${this.baseUrl}/update/${id}?${this.langQuery}`, payload, {
 				withCredentials: true,
-                validateStatus: status => status >= 200 && status <= 500,
+                validateStatus: status => status >= 200 && status < 300,
                 headers: {
                     Authorization: `Bearer ${token}`
                 },
@@ -283,7 +283,7 @@ export class AccountOperation {
 
 			const response: AxiosResponse = await axios.put(`${this.baseUrl}/avatar/update/${id}?${this.langQuery}`, formData, {
 				withCredentials: true,
-                validateStatus: status => status >= 200 && status <= 500,
+                validateStatus: status => status >= 200 && status < 300,
                 headers: {
                     Authorization: `Bearer ${token}`
                 },
@@ -308,7 +308,7 @@ export class AccountOperation {
         try {
 			const response: AxiosResponse = await axios.get(`${this.baseUrl}/avatar/get/${id}?${this.langQuery}`, {
 				withCredentials: true,
-                validateStatus: status => status >= 200 && status <= 500,
+                validateStatus: status => status >= 200 && status < 300,
                 headers: {
                     Authorization: `Bearer ${token}`
                 },
@@ -333,7 +333,7 @@ export class AccountOperation {
         try {
 			const response: AxiosResponse = await axios.get(`${this.baseUrl}/count?${this.langQuery}`, {
 				withCredentials: true,
-                validateStatus: status => status >= 200 && status <= 500,
+                validateStatus: status => status >= 200 && status < 300,
                 headers: {
                     Authorization: `Bearer ${token}`
                 },
@@ -357,7 +357,7 @@ export class AccountOperation {
         try {
 			const response: AxiosResponse = await axios.get(`${this.baseUrl}/info`, {
 				withCredentials: true,
-                validateStatus: status => status >= 200 && status <= 500,
+                validateStatus: status => status >= 200 && status < 300,
                 headers: {
                     Authorization: `Bearer ${token}`
                 },
@@ -381,7 +381,7 @@ export class AccountOperation {
         try {
 			const response: AxiosResponse = await axios.post(`${this.baseUrl}/password/reset?${this.langQuery}`, email, {
 				withCredentials: true,
-                validateStatus: status => status >= 200 && status <= 500
+                validateStatus: status => status >= 200 && status < 300
 			});
 			
 			return {
@@ -402,7 +402,7 @@ export class AccountOperation {
         try {      
 			const response: AxiosResponse = await axios.post(`${this.baseUrl}/check?${this.langQuery}`, email, {
 				withCredentials: true,
-                validateStatus: status => status >= 200 && status <= 500
+                validateStatus: status => status >= 200 && status < 300
 			});
 			
 			return {
@@ -423,7 +423,7 @@ export class AccountOperation {
         try {
 			const response: AxiosResponse = await axios.post(`${this.baseUrl}/otp/verify?${this.langQuery}`, payload, {
 				withCredentials: true,
-                validateStatus: status => status >= 200 && status <= 500
+                validateStatus: status => status >= 200 && status < 300
 			});
 			
 			return {
@@ -459,7 +459,7 @@ export class DeviceOperation {
 			const response: AxiosResponse = await axios.post(`${this.baseUrl}/add`, payload, {
 
 				withCredentials: true,
-                validateStatus: status => status >= 200 && status <= 500,
+                validateStatus: status => status >= 200 && status < 300,
                 headers: {
                     Authorization: `Bearer ${token}`
                 },
@@ -491,7 +491,7 @@ export class DeviceOperation {
             const response: AxiosResponse = await axios.get(`${this.baseUrl}`, {
                 params:  payload,
 				withCredentials: true,
-                validateStatus: status => status >= 200 && status <= 500,
+                validateStatus: status => status >= 200 && status < 300,
                 headers: {
                     Authorization: `Bearer ${token}`
                 },
@@ -515,7 +515,7 @@ export class DeviceOperation {
         try {
 			const response: AxiosResponse = await axios.put(`${this.baseUrl}/${id}`, payload, {
 				withCredentials: true,
-                validateStatus: status => status >= 200 && status <= 500,
+                validateStatus: status => status >= 200 && status < 300,
                 headers: {
                     Authorization: `Bearer ${token}`
                 },
@@ -539,7 +539,7 @@ export class DeviceOperation {
         try {
 			const response: AxiosResponse = await axios.delete(`${this.baseUrl}/${id}`, {
 				withCredentials: true,
-                validateStatus: status => status >= 200 && status <= 500,
+                validateStatus: status => status >= 200 && status < 300,
                 headers: {
                     Authorization: `Bearer ${token}`
                 },
@@ -564,7 +564,7 @@ export class DeviceOperation {
             const response: AxiosResponse = await axios.get(`${this.baseUrl}/getdata`, {
                 params: { deviceId },
                 withCredentials: true,
-                validateStatus: status => status >= 200 && status <= 500,
+                validateStatus: status => status >= 200 && status < 300,
                 headers: {
                     Authorization: `Bearer ${token}`
                 },
@@ -583,7 +583,7 @@ export class DeviceOperation {
             const response: AxiosResponse = await axios.put(`${this.baseUrl}/update`, payload, {
                 params: { id },
                 withCredentials: true,
-                validateStatus: status => status >= 200 && status <= 500,
+                validateStatus: status => status >= 200 && status < 300,
                 headers: {
                     Authorization: `Bearer ${token}`
                 },
@@ -605,7 +605,7 @@ export class DeviceOperation {
             const response: AxiosResponse = await axios.get(`${this.baseUrl}/first-data-points`, {
                 params: { userId },
                 withCredentials: true,
-                validateStatus: status => status >= 200 && status <= 500,
+                validateStatus: status => status >= 200 && status < 300,
                 headers: {
                     Authorization: `Bearer ${token}`
                 },
@@ -629,9 +629,9 @@ export class DeviceOperation {
 
         try {
             const response: AxiosResponse = await axios.post(`${this.baseUrl}/triggeraction`, null, {
-                params: { value, qrCode },
+                params: { qrCode: qrCode, value: value },
                 withCredentials: true,
-                validateStatus: status => status >= 200 && status <= 500,
+                validateStatus: status => status >= 200 && status < 300,
                 headers: {
                     Authorization: `Bearer ${token}`
                 },
@@ -662,7 +662,7 @@ export class UserOperation {
 			const response: AxiosResponse = await axios.get(`${this.baseUrl}/get`,{
                 params: {limit, page},
 				withCredentials: true,
-                validateStatus: status => status >= 200 && status <= 500,
+                validateStatus: status => status >= 200 && status < 300,
                 headers: {
                     Authorization: `Bearer ${token}`
                 },
@@ -688,7 +688,7 @@ export class UserOperation {
                     Authorization: token
                 },
                 withCredentials: true,
-                validateStatus: status => status >= 200 && status <= 500,
+                validateStatus: status => status >= 200 && status < 300,
                 headers: {
                     Authorization: `Bearer ${token}`
                 },
@@ -710,7 +710,7 @@ export class UserOperation {
         try {
 			const response: AxiosResponse = await axios.get(`${this.baseUrl}/${id}`,{
 				withCredentials: true,
-                validateStatus: status => status >= 200 && status <= 500,
+                validateStatus: status => status >= 200 && status < 300,
                 headers: {
                     Authorization: `Bearer ${token}`
                 },
@@ -733,7 +733,7 @@ export class UserOperation {
         try {
 			const response: AxiosResponse = await axios.delete(`${this.baseUrl}/delete/${id}?${this.langQuery}`, {
 				withCredentials: true,
-                validateStatus: status => status >= 200 && status <= 500,
+                validateStatus: status => status >= 200 && status < 300,
                 headers: {
                     Authorization: `Bearer ${token}`
                 },
@@ -770,7 +770,7 @@ export class NotificationOperation {
         try {
             const response: AxiosResponse = await axios.post(`${this.baseUrl}`, payload, {
                 withCredentials: true,
-                validateStatus: status => status >= 200 && status <= 500,
+                validateStatus: status => status >= 200 && status < 300,
                 headers: {
                     Authorization: `Bearer ${token}`
                 },
@@ -793,7 +793,7 @@ export class NotificationOperation {
         try {
             const response: AxiosResponse = await axios.get(`${this.baseUrl}/${userId}/${deviceId}`, {
                 withCredentials: true,
-                validateStatus: status => status >= 200 && status <= 500,
+                validateStatus: status => status >= 200 && status < 300,
                 headers: {
                     Authorization: `Bearer ${token}`
                 },
@@ -816,7 +816,7 @@ export class NotificationOperation {
         try {
             const response: AxiosResponse = await axios.put(`${this.baseUrl}/${userId}/${deviceId}`, payload, {
                 withCredentials: true,
-                validateStatus: status => status >= 200 && status <= 500,
+                validateStatus: status => status >= 200 && status < 300,
                 headers: {
                     Authorization: `Bearer ${token}`
                 },
@@ -839,7 +839,7 @@ export class NotificationOperation {
         try {
             const response: AxiosResponse = await axios.delete(`${this.baseUrl}/${userId}/${deviceId}`, {
                 withCredentials: true,
-                validateStatus: status => status >= 200 && status <= 500,
+                validateStatus: status => status >= 200 && status < 300,
                 headers: {
                     Authorization: `Bearer ${token}`
                 },
