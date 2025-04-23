@@ -1,12 +1,15 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
+import dynamic from 'next/dynamic';
 import { DeviceOperation, NotificationOperation } from "@/BE-library/main";
 import { useSession } from "@/providers/SessionProvider";
-import AreaChartCard from "@/components/Chart/Line";
 import CustomLoadingElement from "../../loading";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import NotificationEditorModal from "../_component/editModal";
+// import AreaChartCard from "@/components/Chart/Line";
+const AreaChartCard = dynamic (()=> import("@/components/Chart/Line"),{ssr:false});
+
 interface Notification {
   frequencyMinutes: number;
   active: boolean;
@@ -37,7 +40,10 @@ interface DeviceType {
 }
 
 function getTopValues(data: DataType[], count: number = 20): number[] {
-  return data.slice(0, count).map(item => item.value);
+  if (data !== null) {
+    return data.slice(0, count).map(item => item.value);
+  }
+  return [undefined]
 }
 
 const notificationOperation = new NotificationOperation();
@@ -52,7 +58,7 @@ function throttleTriggerAction(
   if (!throttleTimeout.current) {
     throttleTimeout.current = setTimeout(async () => {
       try {
-        await action.triggerAction(qrCode, newSpeed.toString() ,sessionSid);
+        await action.triggerAction(qrCode, newSpeed.toString(), sessionSid);
         toast.success(`Tốc độ đã được cập nhật thành ${newSpeed}%`);
       } catch (error) {
         toast.error("Lỗi khi cập nhật tốc độ");
@@ -77,6 +83,8 @@ function DevicePage({
   const [editingNotification, setEditingNotification] = useState<Notification>(null);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const throttleTimeout = useRef<NodeJS.Timeout | null>(null);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [showConfirm1, setShowConfirm1] = useState(false);
 
   const closePopup = () => {
     setOpen(false)
@@ -84,12 +92,17 @@ function DevicePage({
 
   const handleUpdateDevice = async () => {
     if (device && session) {
+      console.log("device", device);
+
       toast.promise(
         action.updateDevice(device.id, device, session.sid),
         {
           loading: 'Đang cập nhật thiết bị...',
           success: () => {
             setEdit(false); // Exit edit mode after successful update
+            if (typeof window !== undefined) {
+              window.location.reload()
+            }
             return 'Cập nhật thiết bị thành công!';
           },
           error: 'Lỗi khi cập nhật thiết bị',
@@ -123,18 +136,38 @@ function DevicePage({
     }
   };
 
+  const handleDeleteDevice = async () => {
+    if (device && session) {
+      toast.promise(
+        action.delete(device.id, session.sid),
+        {
+          loading: 'Đang xóa...',
+          success: async (data) => {
+            router.replace('/en/device')
+            return 'Xóa thành công!';
+          },
+          error: 'Lỗi khi xóa',
+        }
+      );
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       if (status === "authenticated" && session && params.id[0]) {
         try {
           const result = await action.getData(params.id[0], session.sid);
+          setData(result);
+        } catch (error) {
+          setData(null);
+        }
+
+        try {
           const deviceInfo = await action.searchAll(session.sid, { id: params.id[0] });
           const notificationData = await action.searchAll(session.sid, { id: params.id[0] });
-          const notificationDetail = await notificationOperation.findOne(session.id,params.id[0], session.sid);
+          const notificationDetail = await notificationOperation.findOne(session.id, params.id[0], session.sid);
 
-          console.log(deviceInfo.data);
           setDevice(deviceInfo.data[0]);
-          setData(result);
           setNotifications(notificationData.data);
           setEditingNotification(notificationDetail.data);
           console.log(notificationDetail)
@@ -149,7 +182,7 @@ function DevicePage({
   return (
     <>
       <div className="w-screen h-fit md:h-screen overflow-y-scroll md:overflow-hidden">
-        {device ? 
+        {device ?
           <div className="flex gap-10 pt-20 items-center w-full h-full flex-col md:flex-row md:px-10">
             {/* Chart Section */}
             <div className="h-full w-full md:w-1/2 flex flex-col items-center justify-center gap-10">
@@ -169,37 +202,69 @@ function DevicePage({
                       <div key={key} className="flex items-center gap-2">
                         <strong>{label}:</strong>
                         {
-                        key === "createDate" || key === "updateDate" || !edit ?
-                        (() => {
-                            const value = device[key];
-                            if (key === "createDate" || key === "updateDate") {
-                              const dateValue = typeof value === "string" ? new Date(value) : value;
-                              return (
-                                <span>
-                                  {dateValue.toLocaleTimeString("vi-VN")} {dateValue.toLocaleDateString("vi-VN")}
-                                </span>
-                              );
-                            }
-                            return <span>{value}</span>;
-                          })()
-                          :
-                        <input
-                          type="text"
-                          value={device[key]}
-                          onChange={(e) =>
-                            setDevice((prev) => ({
-                              ...prev,
-                              [key]: e.target.value,
-                            }))
-                          }
-                          className="border rounded px-2 py-1 flex-1"
-                        />}
+                          key === "createDate" || key === "updateDate" || !edit ?
+                            (() => {
+                              const value = device[key];
+                              if (key === "createDate" || key === "updateDate") {
+                                const dateValue = typeof value === "string" ? new Date(value) : value;
+                                return (
+                                  <span>
+                                    {dateValue.toLocaleTimeString("vi-VN")} {dateValue.toLocaleDateString("vi-VN")}
+                                  </span>
+                                );
+                              }
+                              return <span>{value}</span>;
+                            })()
+                            :
+                            <input
+                              type="text"
+                              value={device[key]}
+                              onChange={(e) =>
+                                setDevice((prev) => ({
+                                  ...prev,
+                                  [key]: e.target.value,
+                                }))
+                              }
+                              className="border rounded px-2 py-1 flex-1"
+                            />}
                       </div>
                     ))}
                   </div>
                 )}
-                <div className="flex gap-4 mt-4">
-                  {!edit ? 
+                <div className="flex gap-4 mt-4 justify-end">
+                  <div className="relative inline-block">
+                    <button
+                      className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+                      onClick={() => setShowConfirm(true)}
+                    >
+                      Xóa
+                    </button>
+
+                    {showConfirm && (
+                      <div className="absolute z-10 top-full mt-2 right-0 w-64 bg-white border border-gray-300 rounded-lg shadow-lg p-4 text-sm text-gray-700">
+                        <p>Bạn có chắc chắn muốn xóa lịch trình này không?</p>
+                        <div className="flex justify-end gap-2 mt-4">
+                          <button
+                            onClick={() => setShowConfirm(false)}
+                            className="px-3 py-1 rounded-md bg-gray-200 hover:bg-gray-300"
+                          >
+                            Hủy
+                          </button>
+                          <button
+                            onClick={() => {
+                              handleDeleteDevice();
+                              setShowConfirm(false);
+                            }}
+                            className="px-3 py-1 rounded-md bg-red-600 text-white hover:bg-red-700"
+                          >
+                            Xóa
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {!edit ?
                     <>
                       <button
                         onClick={() => setEdit(true)}
@@ -208,14 +273,14 @@ function DevicePage({
                         Chỉnh sửa
                       </button>
                     </>
-                  :
+                    :
                     <>
                       <button
                         onClick={handleUpdateDevice}
                         className="rounded-lg text-white bg-green-700 px-4 py-2 active:bg-green-600 active:ring-transparent active:text-white"
                       >
                         Cập nhật
-                      </button>                         
+                      </button>
                     </>
                   }
                   <button
@@ -238,30 +303,37 @@ function DevicePage({
                       type="range"
                       min="0"
                       max="100"
-                      value={getTopValues(data)[0] || 0}
+                      defaultValue={getTopValues(data)[0] || 0}
                       onChange={(e) => {
                         const newSpeed = Number(e.target.value);
                         setDevice((prev) => ({
                           ...prev,
                           speed: newSpeed,
                         }));
-
+                      }}
+                      onMouseUp={(e) => {
                         if (session && device?.qrCode) {
-                          throttleTriggerAction(newSpeed, device.qrCode, session.sid, throttleTimeout, action);
+                          throttleTriggerAction(device.speed ?? getTopValues(data)[0] ?? 0, device.qrCode, session.sid, throttleTimeout, action);
+                        }
+                      }}
+                      onTouchEnd={(e) => {
+                        if (session && device?.qrCode) {
+                          throttleTriggerAction(device.speed ?? getTopValues(data)[0] ?? 0, device.qrCode, session.sid, throttleTimeout, action);
                         }
                       }}
                       className="w-full"
                     />
                     <div className="text-center mt-2 text-sm text-gray-600">
-                      {getTopValues(data)[0]|| 0}%
+                      {device.speed ?? getTopValues(data)[0] ?? 0}%
                     </div>
                   </div>
                 )}
               </div>
+
               {data && <div className="h-1/2 w-full flex flex-col">
                 <AreaChartCard
                   data={getTopValues(data).reverse()}
-                  categories={data.map(item => 
+                  categories={data.map(item =>
                     `${new Date(item.created_at).toLocaleDateString("vi-VN")} ${new Date(item.created_at).toLocaleTimeString("vi-VN")}`
                   ).reverse()}
                   label="Lịch sử ghi nhận"
@@ -290,6 +362,13 @@ function DevicePage({
                     </div>
                   </div>
                 ))}
+                {!data && (
+                  <div className="w-full flex justify-center my-6">
+                    <div className="flex items-center gap-2 px-4 py-3 rounded-lg bg-red-50 border border-red-200 text-red-600 shadow-sm">
+                      <span className="text-lg">Không thể kết nối với thiết bị</span>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>

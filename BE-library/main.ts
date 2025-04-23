@@ -537,7 +537,7 @@ export class DeviceOperation {
     
     async delete(id: string, token: string) {
         try {
-			const response: AxiosResponse = await axios.delete(`${this.baseUrl}`, {
+			const response: AxiosResponse = await axios.delete(`${this.baseUrl}/delete`, {
                 params:{id},
 				withCredentials: true,
                 validateStatus: status => status >= 200 && status < 300,

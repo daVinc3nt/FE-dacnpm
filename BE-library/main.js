@@ -737,7 +737,7 @@ var DeviceOperation = /** @class */ (function () {
                 switch (_c.label) {
                     case 0:
                         _c.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, axios_1.default.delete("".concat(this.baseUrl), {
+                        return [4 /*yield*/, axios_1.default.delete("".concat(this.baseUrl, "/delete"), {
                                 params: { id: id },
                                 withCredentials: true,
                                 validateStatus: function (status) { return status >= 200 && status < 300; },

@@ -34,8 +34,6 @@ export const FloatingNav = ({
     { name: t("home"), link: "/" },
     { name: t("online_test"), link: "/device" },
     { name: t("notes"), link: "/schedule" },
-    { name: t("news"), link: "/" },
-    
   ];
   const { searchTitle, setSearchTitle } = useSearchContext();
   const [isSearchFocused, setIsSearchFocused] = useState(false);

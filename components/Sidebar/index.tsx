@@ -14,7 +14,7 @@ type Props = {}
 const Sidebar: FC<Props> = () => {
   const { openSidebar, setOpenSidebar } = useSidebarContext()
   const {session, status} =useSession()
-  const t =useTranslations("stat_bar")
+  const t = useTranslations("stat_bar")
   return (
     <div className='top-0 md:hidden fixed z-[6000] h-screen'>
       <div className={`bg-[#000] bg-opacity-70 fixed inset-0 z-[6000] ${openSidebar ? 'block w-screen h-screen' : 'hidden'}`} onClick={() => setOpenSidebar(false)} />

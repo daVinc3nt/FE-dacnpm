@@ -9,15 +9,15 @@ export default function RootLayout(props: {
   modal: React.ReactNode;
 }) {
   return (
-      <section className="no-scrollbar hide-scrollbar">
-        <SidebarProvider>
-            <FloatingNav />
-            <Sidebar />
-              {props.children}
-              {props.modal}
-              <div id="modal-root" />
-              <FloatingNav />
-        </SidebarProvider> 
-      </section>
+    <section className="no-scrollbar hide-scrollbar">
+      <SidebarProvider>
+        <FloatingNav />
+        <Sidebar />
+        {props.children}
+        {props.modal}
+        <div id="modal-root" />
+        <FloatingNav />
+      </SidebarProvider>
+    </section>
   );
 }

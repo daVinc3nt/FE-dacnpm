@@ -470,7 +470,9 @@ export default function CustomCalendar() {
         onSubmit={(data) => {
           const postPayload = async (temp) => {
             try {
+              
               const res = await action.create(temp, session.sid)
+              console.log("res",res);
               if (res.status === 201) {
                 setDialogType('success');
                 setDialogMessages(['Tạo thành công!']);
@@ -479,7 +481,7 @@ export default function CustomCalendar() {
                 return true // van hien thi dialog
               } else {
                 setDialogType('error');
-                const msgs = Array.isArray(res.message) ? res.message : [res.message || 'Đã xảy ra lỗi.'];
+                const msgs = Array.isArray(res.success.message) ? res.success.message : [res.success.message || 'Đã xảy ra lỗi.'];
                 setDialogMessages(msgs);
                 setDialogOpen(true);
                 return false // tat dialog

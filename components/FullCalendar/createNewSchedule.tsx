@@ -17,7 +17,7 @@ export default function CreateEntityModal({ userId, listDevice, isOpen, onClose,
     deviceId: '',
     action: '',
     actionTime: undefined,
-    conditon: '',
+    conditon: 'null',
     repeat: '',
     time: '',
   });
@@ -31,27 +31,31 @@ export default function CreateEntityModal({ userId, listDevice, isOpen, onClose,
   };
 
   const handleSubmit = () => {
-    const payload = {
-      ...formData,
-      userId: userId,
-      actionTime: formData.actionTime ? Number(formData.actionTime) : undefined,
-    };
-    if (onSubmit(payload)) {
-      onClose();
-
-      setFormData({
-        deviceId: '',
-        action: '',
-        actionTime: undefined,
-        conditon: '',
-        repeat: '',
-        time: '',
-      })
-
-      if (typeof window !== "undefined") {
-        window.location.reload();
+    const run = async () =>{
+      const payload = {
+        ...formData,
+        userId: userId,
+        actionTime: formData.actionTime ? Number(formData.actionTime) : undefined,
+      };
+      let boo = await onSubmit(payload)
+      if (boo) {
+        onClose();
+  
+        setFormData({
+          deviceId: '',
+          action: '',
+          actionTime: undefined,
+          conditon: 'null',
+          repeat: '',
+          time: '',
+        })
+  
+        if (typeof window !== "undefined") {
+          window.location.reload();
+        }
       }
     }
+    run()
   };
 
   return (
@@ -79,11 +83,13 @@ export default function CreateEntityModal({ userId, listDevice, isOpen, onClose,
                   className="w-full border border-gray-300 rounded-md p-2"
                 >
                   <option value="">-- Chọn thiết bị --</option>
-                  {listDevice.map((device) => (
-                    <option key={device.id} value={device.id}>
-                      {device.deviceName}
-                    </option>
-                  ))}
+                  {listDevice
+                    .filter((di) => ['light', 'pump'].includes(di.type))
+                    .map((device) => (
+                      <option key={device.id} value={device.id}>
+                        {device.deviceName}
+                      </option>
+                    ))}
                 </select>
               </div>
 
@@ -112,7 +118,7 @@ export default function CreateEntityModal({ userId, listDevice, isOpen, onClose,
                 </div>
               </div>
 
-              <div className="mb-3">
+              {/* <div className="mb-3">
                 <label className="block text-sm font-medium mb-1">Condition</label>
                 <input
                   type="text"
@@ -121,7 +127,7 @@ export default function CreateEntityModal({ userId, listDevice, isOpen, onClose,
                   onChange={handleChange}
                   className="w-full border border-gray-300 rounded-md p-2"
                 />
-              </div>
+              </div> */}
 
               <div className="mb-3">
                 <label className="block text-sm font-medium mb-1">Repeat</label>
