@@ -26,6 +26,8 @@ export default function TrafficPieChart({
   }, [series, labels, colors]);
 
   return (
+    <div className="max-w-xl mx-auto">
+
     <div className="flex flex-col md:flex-row max-w-lg w-full bg-white rounded-lg shadow-sm dark:bg-gray-800 p-4 md:p-6">
       <div className="flex-1">
         <h5 className="text-xl font-bold text-gray-900 dark:text-white mb-4">{title}</h5>
@@ -46,6 +48,7 @@ export default function TrafficPieChart({
           </div>
         ))}
       </div>
+    </div>
     </div>
   );
 }

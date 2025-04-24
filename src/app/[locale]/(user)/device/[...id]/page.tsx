@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import NotificationEditorModal from "../_component/editModal";
 // import AreaChartCard from "@/components/Chart/Line";
-const AreaChartCard = dynamic (()=> import("@/components/Chart/Line"),{ssr:false});
+const AreaChartCard = dynamic(() => import("@/components/Chart/Line"), { ssr: false });
 
 interface Notification {
   frequencyMinutes: number;
@@ -59,7 +59,7 @@ function throttleTriggerAction(
     throttleTimeout.current = setTimeout(async () => {
       try {
         await action.triggerAction(qrCode, newSpeed.toString(), sessionSid);
-        toast.success(`Tốc độ đã được cập nhật thành ${newSpeed}%`);
+        toast.success(`Tốc độ đã được cập nhật thành ${newSpeed}`);
       } catch (error) {
         toast.error("Lỗi khi cập nhật tốc độ");
         console.error("Error triggering action:", error);
@@ -328,7 +328,38 @@ function DevicePage({
                     </div>
                   </div>
                 )}
+                {/* Active Switcher */}
+                {device.type === "light" && device.status === "Manual Only" && (
+                  <div className="mb-4 flex items-center gap-5">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Active</label>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        defaultChecked={((getTopValues(data)[0] || 0) === 1) ? true : false}
+                        onChange={(e) => {
+                          const isChecked = e.target.checked;
+
+                          setDevice((prev) => ({
+                            ...prev,
+                            speed: (isChecked ? 0 : 1)
+                          }));
+                          if (session && device?.qrCode) {
+                            throttleTriggerAction(device.speed ?? getTopValues(data)[0] ?? 0, device.qrCode, session.sid, throttleTimeout, action);
+                          }
+                        }}
+                        className="sr-only peer"
+                      />
+                      <div
+                        className="w-12 h-6 bg-gray-300 rounded-full peer peer-checked:bg-green-500 transition-all duration-300"
+                      ></div>
+                      <div
+                        className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform duration-300 peer-checked:translate-x-6"
+                      ></div>
+                    </label>
+                  </div>
+                )}
               </div>
+
 
               {data && <div className="h-1/2 w-full flex flex-col">
                 <AreaChartCard

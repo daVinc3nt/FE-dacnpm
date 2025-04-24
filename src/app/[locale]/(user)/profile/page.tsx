@@ -9,7 +9,7 @@ import moment from "moment";
 import 'moment/locale/vi'; // Add this import to use Vietnamese locale
 import { TabSlider } from "@/components/SliderTab/TabSlider";
 import TrafficPieChart from "@/components/Chart/Pie";
-
+import EnvironmentTable from "./Enviroment";
 
 function getStatusClass(status) {
 	switch (status) {
@@ -131,7 +131,7 @@ export default function Profile() {
 						</div>
 
 						<div className="">
-							<div className="w-full h-full">
+							<div className="w-full h-full flex flex-col md:flex-row">
 								{chartData && (
 									<TrafficPieChart
 										series={chartData.series}
@@ -140,6 +140,7 @@ export default function Profile() {
 										title="Tổng quan chỉ số nông trại"
 									/>
 								)}
+								<EnvironmentTable/>
 							</div>
 						</div>
 					</div>
