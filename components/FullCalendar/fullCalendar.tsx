@@ -143,7 +143,6 @@ export default function CustomCalendar() {
       // get list devices
       const devices = await deviceAction.searchAll(session.sid, {})
       setListDevices(devices.data);
-      console.log(devices.data);
 
       // get events and format its
       const res = await action.searchAll(session.sid, {

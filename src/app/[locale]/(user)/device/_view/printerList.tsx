@@ -126,7 +126,7 @@ export default function PrinterList({ userID, setView }: Props) {
             {/* Floating Add Button */}
             <button
                 onClick={() => setShowAddModal(true)}
-                className="fixed bottom-10 right-10 bg-blue-500 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg hover:bg-blue-600"
+                className="z-30 fixed bottom-10 right-10 bg-blue-500 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg hover:bg-blue-600"
             >
                 +
             </button>

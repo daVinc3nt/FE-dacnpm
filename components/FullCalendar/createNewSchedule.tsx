@@ -84,7 +84,7 @@ export default function CreateEntityModal({ userId, listDevice, isOpen, onClose,
                 >
                   <option value="">-- Chọn thiết bị --</option>
                   {listDevice
-                    .filter((di) => ['light', 'pump'].includes(di.type))
+                    .filter((di) => ['trigger'].includes(di.action))
                     .map((device) => (
                       <option key={device.id} value={device.id}>
                         {device.deviceName}
