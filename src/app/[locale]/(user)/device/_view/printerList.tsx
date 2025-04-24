@@ -72,9 +72,9 @@ export default function PrinterList({ userID, setView }: Props) {
     }, [status]);
     return (
         <>
-            <div className="flex absolute w-full h-full gap-10 items-center container mx-auto">
+            <div className="flex z-20 w-full gap-10 container mx-auto mt-[100px] max-w-fit md:max-w-[80vw]">
                 {status === "authenticated" && session ?
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">
                         {ListPayment?.map(({
                             action,
                             createDate,
@@ -99,7 +99,7 @@ export default function PrinterList({ userID, setView }: Props) {
                                     <Image
                                         src={type ? `/photos/${type}.png` : "/photos/Printer.png"}
                                         alt="device"
-                                        className="lg:block hidden"
+                                        className="block"
                                         width={100}
                                         height={100} />
                                     <div className="flex flex-col items-start">

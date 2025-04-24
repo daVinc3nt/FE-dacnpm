@@ -77,10 +77,10 @@ export default function Profile() {
 	return (
 		<>
 			{status === "authenticated" && session ? (
-				<div className="px-10 md:px-20 h-screen flex justify-center">
-					<div className="bg-white mt-32 animate-slide_in_up rounded-3xl justify-center w-full flex flex-col h-[calc(600px)] shadow-xl">
-						<div className="flex gap-5 items-center justify-between bg-blue-500 p-20 rounded-tr-3xl rounded-tl-3xl w-full h-52">
-							<div className="w-fit gap-5 items-center justify-center flex">
+				<div className="px-10 md:px-20 flex justify-center">
+					<div className="bg-white mt-32 animate-slide_in_up rounded-3xl justify-center w-full flex flex-col shadow-xl">
+						<div className="flex gap-5 items-center justify-between bg-blue-500 p-10 md:p-20 rounded-tr-3xl rounded-tl-3xl w-full flex-col md:flex-row">
+							<div className="w-fit gap-5 items-center justify-center flex flex-col md:flex-row">
 								<div className="h-fit animate-pop flex flex-col items-center justify-center">
 									{!session.avaUrl && (
 										<div className="relative flex w-32 h-32 hover:cursor-pointer rounded-full overflow-hidden transition-all duration-500 cursor-pointer">
@@ -130,7 +130,7 @@ export default function Profile() {
 							</div>
 						</div>
 
-						<div className="flex flex-col gap-10 overflow-y-scroll hide-scrollbar flex-1">
+						<div className="">
 							<div className="w-full h-full">
 								{chartData && (
 									<TrafficPieChart
